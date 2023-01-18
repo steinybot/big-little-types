@@ -164,7 +164,7 @@ function compileSass() {
 
     sass.render({
         data: transformedFile.contents.toString(),
-        includePaths: ['css/', 'css/theme/template']
+        includePaths: ['css/', 'css/theme/template', 'node_modules']
     }, ( err, result ) => {
         if( err ) {
             console.log( vinylFile.path );

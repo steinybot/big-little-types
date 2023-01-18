@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="dist/theme/big-little-types.css">
 
     <!-- Theme used for syntax highlighted code -->
-    <link rel="stylesheet" href="plugin/highlight/monokai.css">
+<!--    <link rel="stylesheet" href="plugin/highlight/monokai.css">-->
 </head>
 <body>
 <div class="reveal">
@@ -61,7 +61,35 @@
                 </ul>
             </section>
         </section>
-        <section>Slide 2</section>
+        <section>
+            <h2>Teaser</h2>
+            <pre><code data-noescape>
+function RedList(props: { children: ReactElement[] }) {
+  return &lt;ul style={{ color: "red" }}&gt;{props.children}&lt;/ul&gt;;
+}
+
+function QuantifiedListItem(props: { children: string; amount: number }) {
+  return &lt;li&gt;{props.children} * {props.amount}&lt;/li&gt;;
+}
+
+export default function App() {
+  return (
+    &lt;RedList&gt;
+      &lt;li&gt;Apple&lt;/li&gt;
+      &lt;li&gt;Banana&lt;/li&gt;
+      &lt;QuantifiedListItem amount={5}&gt;Cherry&lt;/QuantifiedListItem&gt;
+    &lt;/RedList&gt;
+  );
+}
+            </code></pre>
+        </section>
+        <section>
+            <h1>React</h1>
+            <div class="r-stack">
+                <h2 class="fragment fade-out">A JavaScript library for building user interfaces</h2>
+                <p class="fragment fade-in-then-out">The community has provided Typescript definitions</p>
+            </div>
+        </section>
     </div>
 </div>
 
@@ -75,6 +103,9 @@
     // - https://revealjs.com/config/
     Reveal.initialize({
         hash: true,
+
+        width: 1440,
+        // margin: 0.05,
 
         // Learn about plugins: https://revealjs.com/plugins/
         plugins: [RevealMarkdown, RevealHighlight, RevealNotes]

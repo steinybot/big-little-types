@@ -44,6 +44,13 @@ $heading4Size: 1.0em;
   vertical-align: sub;
 }
 
+// Highlight.js Theme
+@import "highlight.js/scss/night-owl.scss";
+
 // Theme template ------------------------------
 @import "../template/theme";
 // ---------------------------------------------
+
+.reveal pre code {
+  max-height: 95%;
+}
