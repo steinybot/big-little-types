@@ -37,6 +37,7 @@
                          style="position: relative; top: 5%; left: 19%;">
                 </div>
             </section>
+
             <section>
                 <h2>A Bit About Me</h2>
                 <ul>
@@ -67,25 +68,27 @@
         <section>
             <h2>Teaser</h2>
             <div class="code-overlay-container r-stack">
-                <pre><code data-noescape>
+                <pre><code data-trim data-line-numbers=""><script type="text/template">
+import { ReactElement } from "react";
+
 function RedList(props: { children: ReactElement[] }) {
-  return &lt;ul style={{ color: "red" }}&gt;{props.children}&lt;/ul&gt;;
+  return <ul style={{ color: "red" }}>{props.children}</ul>;
 }
 
 function QuantifiedListItem(props: { children: string; amount: number }) {
-  return &lt;li&gt;{props.children} * {props.amount}&lt;/li&gt;;
+  return <li>{props.children} * {props.amount}</li>;
 }
 
 export default function App() {
   return (
-    &lt;RedList&gt;
-      &lt;li&gt;Apple&lt;/li&gt;
-      &lt;li&gt;Banana&lt;/li&gt;
-      &lt;QuantifiedListItem amount={5}&gt;Cherries&lt;/QuantifiedListItem&gt;
-    &lt;/RedList&gt;
+    <RedList>
+      <li>Apple</li>
+      <li>Banana</li>
+      <QuantifiedListItem amount={5}>Cherries</QuantifiedListItem>
+    </RedList>
   );
 }
-                </code></pre>
+                </script></code></pre>
                 <div class="code-overlay fragment">
                     <ul style="color: red;">
                         <li>Apple</li>
@@ -96,12 +99,40 @@ export default function App() {
             </div>
         </section>
         <section>
-            <h2>React</h2>
-            <div class="r-stack">
-                <h3 class="fragment fade-out">A JavaScript library for building user interfaces</h3>
-                <p class="fragment fade-in-then-out">The community has provided Typescript definitions</p>
-                <p class="fragment fade-in-then-out">Function and Class Components</p>
-            </div>
+            <section>
+                <h2>React Primer</h2>
+                <h3 class="fragment">React: A JavaScript library for building user interfaces</h3>
+                <ul>
+                    <li class="fragment">The community has provided Typescript definitions</li>
+                    <li class="fragment">Often used with JSX</li>
+                    <li class="fragment">Concepts: Elements, Components, Props, State, Rendering</li>
+                    <li class="fragment">Function and Class Components</li>
+                </ul>
+            </section>
+            <section>
+                <h2>React Primer</h2>
+                <pre><code data-trim data-line-numbers="4,8,14-15|3,7,11,13,16-17"><script type="text/template">
+import { ReactElement } from "react";
+
+function RedList(props: { children: ReactElement[] }) {
+  return <ul style={{ color: "red" }}>{props.children}</ul>;
+}
+
+function QuantifiedListItem(props: { children: string; amount: number }) {
+  return <li>{props.children} * {props.amount}</li>;
+}
+
+export default function App() {
+  return (
+    <RedList>
+      <li>Apple</li>
+      <li>Banana</li>
+      <QuantifiedListItem amount={5}>Cherries</QuantifiedListItem>
+    </RedList>
+  );
+}
+                </script></code></pre>
+            </section>
         </section>
     </div>
 </div>
