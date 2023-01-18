@@ -33,15 +33,60 @@ $heading4Size: 1.0em;
 @include dark-bg-text-color(#fff);
 
 // Custom styles
+
+// The logos on the hero image on the first slide.
 .logo {
   width: 120px;
 }
+
+// The hero image on the first slide.
+.hero {
+  height: 450px;
+}
+
+.code-overlay-container {
+  position: relative;
+}
+
+.code-overlay {
+  // Overlay something over code.
+  background-color: var(--r-background-color);
+  position: absolute;
+  bottom: 10px;
+  // The code width is 90%.
+  right: calc(5% + 10px);
+}
+
+
+// Override reveal styles.
 
 .reveal img.inline {
   display: inline-block;
   margin: 0;
   height: 1em;
   vertical-align: sub;
+}
+
+.reveal section {
+  // All sections should have 100% height not just the top one.
+  // An explicit height means that children with max-height: 100% will work.
+  height: 100%;
+}
+
+.reveal section * {
+  // Ideally nothing should overflow its parent.
+  // This only works if the height is set.
+  max-height: 100%;
+}
+
+.reveal {
+  h1, h2, h3, h4, h5, h6 {
+    &.fix-heading-alignment:last-child {
+      // Not sure why but there is a margin-bottom: 0 the last headings which causes weird alignment, especially within
+      // a stack (maybe this is only when in a stack?).
+      margin-bottom: auto;
+    }
+  }
 }
 
 // Highlight.js Theme
@@ -52,5 +97,6 @@ $heading4Size: 1.0em;
 // ---------------------------------------------
 
 .reveal pre code {
+  // The theme sets this to a max of 400px.
   max-height: 95%;
 }

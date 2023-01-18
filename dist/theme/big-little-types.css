@@ -7,11 +7,38 @@ section.has-dark-background, section.has-dark-background h1, section.has-dark-ba
   width: 120px;
 }
 
+.hero {
+  height: 450px;
+}
+
+.code-overlay-container {
+  position: relative;
+}
+
+.code-overlay {
+  background-color: var(--r-background-color);
+  position: absolute;
+  bottom: 10px;
+  right: calc(5% + 10px);
+}
+
 .reveal img.inline {
   display: inline-block;
   margin: 0;
   height: 1em;
   vertical-align: sub;
+}
+
+.reveal section {
+  height: 100%;
+}
+
+.reveal section * {
+  max-height: 100%;
+}
+
+.reveal h1.fix-heading-alignment:last-child, .reveal h2.fix-heading-alignment:last-child, .reveal h3.fix-heading-alignment:last-child, .reveal h4.fix-heading-alignment:last-child, .reveal h5.fix-heading-alignment:last-child, .reveal h6.fix-heading-alignment:last-child {
+  margin-bottom: auto;
 }
 
 /*
