@@ -103,7 +103,7 @@ export default function App() {
                 <h2>React Primer</h2>
                 <h3 class="fragment">React: A JavaScript library for building user interfaces</h3>
                 <ul>
-                    <li class="fragment">The community has provided Typescript definitions</li>
+                    <li class="fragment">The community has provided TypeScript definitions</li>
                     <li class="fragment">Often used with JSX</li>
                     <li class="fragment">Concepts: Elements, Components, Props, State, Rendering</li>
                     <li class="fragment">Function and Class Components</li>
@@ -130,6 +130,105 @@ export default function App() {
       <QuantifiedListItem amount={5}>Cherries</QuantifiedListItem>
     </RedList>
   );
+}
+                </script></code></pre>
+            </section>
+        </section>
+        <section>
+            <section>
+                <h2>Restricting Children</h2>
+                <div class="code-overlay-container r-stack">
+                <pre><code data-trim data-line-numbers="3,15"><script type="text/template">
+import { ReactElement } from "react";
+
+function RedList(props: { children: ReactElement[] }) {
+  return <ul style={{ color: "red" }}>{props.children}</ul>;
+}
+
+function QuantifiedListItem(props: { children: string; amount: number }) {
+  return <li>{props.children} * {props.amount}</li>;
+}
+
+export default function App() {
+  return (
+    <RedList>
+      <li>Apple</li>
+      <p>Banana</p>
+      <QuantifiedListItem amount={5}>Cherries</QuantifiedListItem>
+    </RedList>
+  );
+}
+                </script></code></pre>
+                    <div class="code-overlay fragment">
+                        <ul style="color: red;">
+                            <li>Apple</li>
+                            <p>Banana</p>
+                            <li>Cherries * 5</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+<!--            <ul>https://flow.org/en/docs/react/children/#toc-only-allowing-a-specific-element-type-as-children</ul>-->
+        </section>
+        <section>
+            <section>
+                <h2>Scala.js Primer</h2>
+                <h3 class="fragment">Scala.js: Scala for the web</h3>
+                <ul>
+                    <li class="fragment">Now a built-in target for the Scala compiler</li>
+                    <li class="fragment">Outputs .sjsir and .class files</li>
+                    <li class="fragment">Scala.js linker produces .js files</li>
+                    <li class="fragment">Same semantics as JVM (mostly)</li>
+                    <li class="fragment">Very good JavaScript interoperability</li>
+                    <li class="fragment">Generate Scala.js facades from TypeScript</li>
+                </ul>
+            </section>
+            <section>
+                <h2>Scala.js Primer</h2>
+                <pre><code class="language-scala" data-trim data-line-numbers=""><script type="text/template">
+def RedList(children: ReactElement*) =
+  ul(style := js.Dynamic.literal(color = "red"))(children: _*)
+
+def QuantifiedListItem(amount: Int)(children: String) =
+  li(s"$children * $amount")
+
+def App =
+  RedList( //
+    li("Apple"),
+    li("Banana"),
+    QuantifiedListItem(5)("Cherries")
+  )
+                </script></code></pre>
+            </section>
+            <section>
+                <h2>Scala.js Primer</h2>
+                <pre style="font-size: 0.4em;"><code class="language-scala" data-trim data-line-numbers="2,3,5,10,11,13,18,21-24"><script type="text/template">
+@react
+object RedList {
+  case class Props(children: ReactElement*)
+  val component = FunctionalComponent[Props] { props =>
+    ul(style := js.Dynamic.literal(color = "red"))(props.children: _*)
+  }
+}
+
+@react
+object QuantifiedListItem {
+  case class Props(children: String, amount: Int)
+  val component = FunctionalComponent[Props] { props =>
+    li(s"${props.children} * ${props.amount}")
+  }
+}
+
+@react
+object App {
+  type Props = Unit
+  val component = FunctionalComponent[Props] { _ =>
+    RedList( //
+      li("Apple"),
+      li("Banana"),
+      QuantifiedListItem(5)("Cherries")
+    )
+  }
 }
                 </script></code></pre>
             </section>
