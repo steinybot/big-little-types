@@ -1,3 +1,5 @@
+package bll
+
 import org.scalajs.dom.document
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
