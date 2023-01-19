@@ -103,7 +103,7 @@ export default function App() {
                 <h2>React Primer</h2>
                 <h3 class="fragment">React: A JavaScript library for building user interfaces</h3>
                 <ul>
-                    <li class="fragment">The community has provided TypeScript definitions</li>
+                    <li class="fragment">The community has provided TypeScript and Flow definitions</li>
                     <li class="fragment">Often used with JSX</li>
                     <li class="fragment">Concepts: Elements, Components, Props, State, Rendering</li>
                     <li class="fragment">Function and Class Components</li>
@@ -111,7 +111,7 @@ export default function App() {
             </section>
             <section>
                 <h2>React Primer</h2>
-                <pre><code data-trim data-line-numbers="4,8,14-15|3,7,11,13,16-17"><script type="text/template">
+                <pre><code data-trim data-line-numbers="|4,8,14-15|3,7,11,13,16-17"><script type="text/template">
 import { ReactElement } from "react";
 
 function RedList(props: { children: ReactElement[] }) {
@@ -135,9 +135,8 @@ export default function App() {
             </section>
         </section>
         <section>
-            <section>
-                <h2>Restricting Children</h2>
-                <div class="code-overlay-container r-stack">
+            <h2>Wrong Child Problem</h2>
+            <div class="code-overlay-container r-stack">
                 <pre><code data-trim data-line-numbers="3,15"><script type="text/template">
 import { ReactElement } from "react";
 
@@ -159,16 +158,15 @@ export default function App() {
   );
 }
                 </script></code></pre>
-                    <div class="code-overlay fragment">
-                        <ul style="color: red;">
-                            <li>Apple</li>
-                            <p>Banana</p>
-                            <li>Cherries * 5</li>
-                        </ul>
-                    </div>
+                <div class="code-overlay fragment">
+                    <ul style="color: red;">
+                        <li>Apple</li>
+                        <p>Banana</p>
+                        <li>Cherries * 5</li>
+                    </ul>
                 </div>
-            </section>
-<!--            <ul>https://flow.org/en/docs/react/children/#toc-only-allowing-a-specific-element-type-as-children</ul>-->
+            </div>
+<!--        <ul>https://flow.org/en/docs/react/children/#toc-only-allowing-a-specific-element-type-as-children</ul>-->
         </section>
         <section>
             <section>
@@ -185,7 +183,7 @@ export default function App() {
             </section>
             <section>
                 <h2>Scala.js Primer</h2>
-                <pre><code class="language-scala" data-trim data-line-numbers=""><script type="text/template">
+                <pre><code class="language-scala" data-trim data-line-numbers="|2,5,9,10|1,4,7,8,11"><script type="text/template">
 def RedList(children: ReactElement*) =
   ul(style := js.Dynamic.literal(color = "red"))(children: _*)
 
@@ -202,7 +200,7 @@ def App =
             </section>
             <section>
                 <h2>Scala.js Primer</h2>
-                <pre style="font-size: 0.4em;"><code class="language-scala" data-trim data-line-numbers="2,3,5,10,11,13,18,21-24"><script type="text/template">
+                <pre style="font-size: 0.4em;"><code class="language-scala" data-trim data-line-numbers="|2,3,5,10,11,13,18,21-24"><script type="text/template">
 @react
 object RedList {
   case class Props(children: ReactElement*)
@@ -232,6 +230,53 @@ object App {
 }
                 </script></code></pre>
             </section>
+        </section>
+        <section>
+            <h2>Wrong Child Solution</h2>
+            <div class="r-stack">
+                <pre><code class="language-scala" data-trim data-line-numbers=""><script type="text/template">
+def RedList(children: ReactElement*): ReactElement =
+  ul(style := js.Dynamic.literal(color = "red"))(children: _*)
+
+def QuantifiedListItem(amount: Int)(children: String): WithAttrs[li.tag.type] =
+  li(s"$children * $amount")
+
+def App: ReactElement =
+  RedList( //
+    li("Apple"),
+    p("Banana"),
+    QuantifiedListItem(5)("Cherries")
+  )
+                </script></code></pre>
+                <pre><code class="fragment language-scala" data-trim data-line-numbers="1,4,10"><script type="text/template">
+def RedList(children: ReactElement*): ReactElement =
+  ul(style := js.Dynamic.literal(color = "red"))(children: _*)
+
+def QuantifiedListItem(amount: Int)(children: String): WithAttrs[li.tag.type] =
+  li(s"$children * $amount")
+
+def App: ReactElement =
+  RedList( //
+    li("Apple"),
+    p("Banana"), // This compiles fine 😒
+    QuantifiedListItem(5)("Cherries")
+  )
+                </script></code></pre>
+                <pre><code class="fragment language-scala" data-trim data-line-numbers="1,4,10"><script type="text/template">
+def RedList(children: TypedReactElement[li.tagType]*): ReactElement =
+  ul(style := js.Dynamic.literal(color = "red"))(children: _*)
+
+def QuantifiedListItem(amount: Int)(children: String): TypedReactElement[li.tagType] =
+  li(s"$children * $amount")
+
+def App: ReactElement =
+  RedList( //
+    li("Apple"),
+    p("Banana"), // This fails to compile 🥳
+    QuantifiedListItem(5)("Cherries")
+  )
+                </script></code></pre>
+            </div>
         </section>
     </div>
 </div>
