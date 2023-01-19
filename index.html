@@ -101,7 +101,7 @@ export default function App() {
         <section>
             <section>
                 <h2>React Primer</h2>
-                <h3 class="fragment">React: A JavaScript library for building user interfaces</h3>
+                <h3>A JavaScript library for building user interfaces</h3>
                 <ul>
                     <li class="fragment">The community has provided TypeScript and Flow definitions</li>
                     <li class="fragment">Often used with JSX</li>
@@ -135,9 +135,9 @@ export default function App() {
             </section>
         </section>
         <section>
-            <h2>Wrong Child Problem</h2>
+            <h2>Untyped Children</h2>
             <div class="code-overlay-container r-stack">
-                <pre><code data-trim data-line-numbers="3,15"><script type="text/template">
+                <pre><code data-trim data-line-numbers="|3,15"><script type="text/template">
 import { ReactElement } from "react";
 
 function RedList(props: { children: ReactElement[] }) {
@@ -232,7 +232,7 @@ object App {
             </section>
         </section>
         <section>
-            <h2>Wrong Child Solution</h2>
+            <h2>Typed Children</h2>
             <div class="r-stack">
                 <pre><code class="language-scala" data-trim data-line-numbers=""><script type="text/template">
 def RedList(children: ReactElement*): ReactElement =
@@ -277,6 +277,9 @@ def App: ReactElement =
   )
                 </script></code></pre>
             </div>
+        </section>
+        <section>
+            <h2>Tagged Type</h2>
         </section>
     </div>
 </div>
