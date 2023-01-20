@@ -65,7 +65,7 @@ class TypedKeyableChildrenImplNewTypeUnsafeSpec extends AnyFlatSpec {
     container.innerHTML mustBe """<ul style="color: red;"><li>Apple</li><li>Banana</li><li>Cherries * 5</li></ul>"""
   }
 
-  it should "fail to compile if the type is wrong" in {
+  it should "no conversion to TypedReactElement yet" in {
     def RedList(children: TypedReactElement[li.tagType]*): ReactElement =
       ul(style := js.Dynamic.literal(color = "red"))(children: _*)
 
@@ -93,5 +93,27 @@ class TypedKeyableChildrenImplNewTypeUnsafeSpec extends AnyFlatSpec {
         cherriesWithKey
       )
     """ mustNot compile
+  }
+
+  it should "fail with a org.scalajs.linker.runtime.UndefinedBehaviorError" in {
+    def RedList(children: TypedKeyAddingStage[li.tag.type]*): ReactElement =
+      ul(style := js.Dynamic.literal(color = "red"))(children: _*)
+
+    @react
+    object QuantifiedListItem {
+      case class Props(amount: Int, children: String)
+      val component = FunctionalComponent[Props] { props =>
+        li(s"${props.children} * ${props.amount}")
+      }
+    }
+
+    val caught = intercept[Throwable] {
+      RedList( //
+        TypedKeyAddingStage.unsafe(QuantifiedListItem(1)("Apple")),
+        TypedKeyAddingStage.unsafe(QuantifiedListItem(3)("Bananas")),
+        TypedKeyAddingStage.unsafe(QuantifiedListItem(5)("Cherries"))
+      )
+    }
+    caught.getCause mustBe a[ClassCastException]
   }
 }
