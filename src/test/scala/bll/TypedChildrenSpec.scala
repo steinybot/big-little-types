@@ -2,7 +2,7 @@ package bll
 
 import org.scalajs.dom.document
 import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.matchers.must.Matchers
+import org.scalatest.matchers.must.Matchers._
 import slinky.core.WithAttrs
 import slinky.core.facade.ReactElement
 import slinky.web.ReactDOM
@@ -10,7 +10,7 @@ import slinky.web.html.{li, style, ul}
 
 import scala.scalajs.js
 
-class TypedChildrenSpec extends AnyFlatSpec with Matchers {
+class TypedChildrenSpec extends AnyFlatSpec {
 
   object TypedReactElement {
 
@@ -29,7 +29,9 @@ class TypedChildrenSpec extends AnyFlatSpec with Matchers {
 
   type TypedReactElement[+Result] = TypedReactElement.Type[Result]
 
-  "Typed children" should "compile if the type is correct" in {
+  behavior of "Typed children"
+
+  it should "compile if the type is correct" in {
     def RedList(children: TypedReactElement[li.tagType]*): ReactElement =
       ul(style := js.Dynamic.literal(color = "red"))(children: _*)
 

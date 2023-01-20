@@ -2,7 +2,7 @@ package bll
 
 import org.scalajs.dom.document
 import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.matchers.must.Matchers
+import org.scalatest.matchers.must.Matchers._
 import slinky.core.WithAttrs
 import slinky.core.facade.ReactElement
 import slinky.web.ReactDOM
@@ -10,9 +10,11 @@ import slinky.web.html.{li, p, style, ul}
 
 import scala.scalajs.js
 
-class UntypedChildrenSpec extends AnyFlatSpec with Matchers {
+class UntypedChildrenSpec extends AnyFlatSpec {
 
-  "Untyped children" should "allow any type of child" in {
+  behavior of "Untyped children"
+
+  it should "allow any type of child" in {
     def RedList(children: ReactElement*): ReactElement =
       ul(style := js.Dynamic.literal(color = "red"))(children: _*)
 
