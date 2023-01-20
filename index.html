@@ -100,7 +100,7 @@ export default function App() {
         </section>
         <section>
             <section>
-                <h2>React Primer</h2>
+                <h2>React</h2>
                 <h3>A JavaScript library for building user interfaces</h3>
                 <ul>
                     <li class="fragment">The community has provided TypeScript and Flow definitions</li>
@@ -110,7 +110,7 @@ export default function App() {
                 </ul>
             </section>
             <section>
-                <h2>React Primer</h2>
+                <h2>React</h2>
                 <pre><code data-trim data-line-numbers="|4,8,14-15|3,7,11,13,16-17"><script type="text/template">
 import { ReactElement } from "react";
 
@@ -170,8 +170,8 @@ export default function App() {
         </section>
         <section>
             <section>
-                <h2>Scala.js Primer</h2>
-                <h3 class="fragment">Scala.js: Scala for the web</h3>
+                <h2>Scala.js</h2>
+                <h3 class="fragment">Scala for the web</h3>
                 <ul>
                     <li class="fragment">Now a built-in target for the Scala compiler</li>
                     <li class="fragment">Outputs .sjsir and .class files</li>
@@ -181,8 +181,29 @@ export default function App() {
                     <li class="fragment">Generate Scala.js facades from TypeScript</li>
                 </ul>
             </section>
+        </section>
+        <section>
             <section>
-                <h2>Scala.js Primer</h2>
+                <h2>Slinky</h2>
+                <pre><code class="language-scala" data-trim data-line-numbers="1|3|5-8|10|12|14"><script type="text/template">
+val tag: WithAttrs[li.tag.type] = li("Apple")
+
+val renderedTag: ReactElement = tag
+
+val component: FunctionalComponent[Props] =
+  FunctionalComponent[Props] { props =>
+    li(s"${props.children} * ${props.amount}")
+  }
+
+val componentWithProps: KeyAddingStage = component(Props("Cherries", 5))
+
+val componentWithKey: ReactElement = componentWithProps.withKey("cherries")
+
+val renderedComponent: ReactElement = componentWithProps
+                </script></code></pre>
+            </section>
+            <section>
+                <h2>Slinky</h2>
                 <pre><code class="language-scala" data-trim data-line-numbers="|2,5,9,10|1,4,7,8,11"><script type="text/template">
 def RedList(children: ReactElement*) =
   ul(style := js.Dynamic.literal(color = "red"))(children: _*)
@@ -191,7 +212,7 @@ def QuantifiedListItem(amount: Int)(children: String) =
   li(s"$children * $amount")
 
 def App =
-  RedList( //
+  RedList(
     li("Apple"),
     li("Banana"),
     QuantifiedListItem(5)("Cherries")
@@ -199,7 +220,7 @@ def App =
                 </script></code></pre>
             </section>
             <section>
-                <h2>Scala.js Primer</h2>
+                <h2>Slinky</h2>
                 <pre style="font-size: 0.4em;"><code class="language-scala" data-trim data-line-numbers="|2,3,5,10,11,13,18,21-24"><script type="text/template">
 @react
 object RedList {
@@ -221,7 +242,7 @@ object QuantifiedListItem {
 object App {
   type Props = Unit
   val component = FunctionalComponent[Props] { _ =>
-    RedList( //
+    RedList(
       li("Apple"),
       li("Banana"),
       QuantifiedListItem(5)("Cherries")
@@ -235,42 +256,42 @@ object App {
             <h2>Typed Children</h2>
             <div class="r-stack">
                 <pre><code class="language-scala" data-trim data-line-numbers=""><script type="text/template">
-def RedList(children: ReactElement*): ReactElement =
+def RedList(children: ReactElement*) =
   ul(style := js.Dynamic.literal(color = "red"))(children: _*)
 
-def QuantifiedListItem(amount: Int)(children: String): WithAttrs[li.tag.type] =
+def QuantifiedListItem(amount: Int)(children: String) =
   li(s"$children * $amount")
 
-def App: ReactElement =
-  RedList( //
+def App =
+  RedList(
     li("Apple"),
     p("Banana"),
     QuantifiedListItem(5)("Cherries")
   )
                 </script></code></pre>
                 <pre><code class="fragment language-scala" data-trim data-line-numbers="1,4,10"><script type="text/template">
-def RedList(children: ReactElement*): ReactElement =
+def RedList(children: ReactElement*) =
   ul(style := js.Dynamic.literal(color = "red"))(children: _*)
 
-def QuantifiedListItem(amount: Int)(children: String): WithAttrs[li.tag.type] =
+def QuantifiedListItem(amount: Int)(children: String) =
   li(s"$children * $amount")
 
-def App: ReactElement =
-  RedList( //
+def App =
+  RedList(
     li("Apple"),
     p("Banana"), // This compiles fine 😒
     QuantifiedListItem(5)("Cherries")
   )
                 </script></code></pre>
                 <pre><code class="fragment language-scala" data-trim data-line-numbers="1,4,10"><script type="text/template">
-def RedList(children: TypedReactElement[li.tagType]*): ReactElement =
+def RedList(children: TypedReactElement[li.tagType]*) =
   ul(style := js.Dynamic.literal(color = "red"))(children: _*)
 
-def QuantifiedListItem(amount: Int)(children: String): TypedReactElement[li.tagType] =
+def QuantifiedListItem(amount: Int)(children: String) =
   li(s"$children * $amount")
 
-def App: ReactElement =
-  RedList( //
+def App =
+  RedList(
     li("Apple"),
     p("Banana"), // This fails to compile 🥳
     QuantifiedListItem(5)("Cherries")
@@ -279,7 +300,80 @@ def App: ReactElement =
             </div>
         </section>
         <section>
-            <h2>Type-Tagging</h2>
+            <section>
+                <h2>Type-Tagging With Value Classes</h2>
+                <div class="r-stack">
+                    <pre><code class="language-scala" data-line-numbers="2">
+                        <script type="text/template">
+class TypedReactElement[Result] private (val element: ReactElement) extends AnyVal
+
+
+
+
+
+
+
+
+
+
+                    </script></code></pre>
+                    <pre><code class="fragment language-scala" data-line-numbers="4-7"><script type="text/template">
+class TypedReactElement[Result] private (val element: ReactElement) extends AnyVal
+
+object TypedReactElement {
+  implicit def apply[Result](tag: WithAttrs[Result]): TypedReactElement[Result] =
+    new TypedReactElement(tag)
+}
+
+
+
+
+
+                    </script></code></pre>
+                    <pre><code class="fragment language-scala" data-line-numbers="9-11"><script type="text/template">
+class TypedReactElement[Result] private (val element: ReactElement) extends AnyVal
+
+object TypedReactElement {
+  implicit def apply[Result](tag: WithAttrs[Result]): TypedReactElement[Result] =
+    new TypedReactElement(tag)
+}
+
+val tag: WithAttrs[li.tag.type] = li("Apple")
+
+val renderedTypedTag: TypedReactElement[li.tag.type] = tag
+
+                    </script></code></pre>
+                </div>
+            </section>
+            <section>
+                <h2>Type-Tagging With Value Classes</h2>
+                <pre><code class="language-scala" data-trim data-line-numbers=""><script type="text/template">
+def RedList(children: TypedReactElement[li.tagType]*): ReactElement =
+  ul(style := js.Dynamic.literal(color = "red"))(children: _*)
+
+def QuantifiedListItem(amount: Int)(children: String): TypedReactElement[li.tagType] =
+  li(s"$children * $amount")
+
+def App: ReactElement =
+  RedList(
+    li("Apple"),
+    p("Banana"), // This fails to compile 🥳
+    QuantifiedListItem(5)("Cherries")
+  )
+                </script></code></pre>
+            </section>
+            <section>
+                <h2>Value Classes Are Not So Great</h2>
+                <pre><code class="language-plaintext" data-trim data-line-numbers="|7"><script type="text/template">
+49: invokevirtual #217  // Method slinky/web/html/li$.apply:(Lscala/collection/immutable/Seq;)Lscala/scalajs/js/Array;
+52: invokevirtual #220  // Method Demo$TypedReactElement$.apply:(Lscala/scalajs/js/Array;)Lslinky/core/facade/ReactElement;
+55: invokespecial #244  // Method Demo$TypedReactElement."<init>":(Lslinky/core/facade/ReactElement;)V
+58: aastore
+59: dup
+60: iconst_1
+61: new           #10   // class Demo$TypedReactElement
+                </script></code></pre>
+            </section>
         </section>
     </div>
 </div>

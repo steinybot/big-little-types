@@ -41,6 +41,11 @@ section.has-dark-background, section.has-dark-background h1, section.has-dark-ba
   margin-bottom: auto;
 }
 
+.reveal .r-stack > *.code-wrapper {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
 /*
 
 Night Owl for highlight.js (c) Carl Baxter <carl@cbax.tech>

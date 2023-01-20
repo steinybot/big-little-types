@@ -89,6 +89,12 @@ $heading4Size: 1.0em;
   }
 }
 
+.reveal .r-stack > *.code-wrapper {
+  // Code blocks in a stack should not be centered vertically.
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
 // Highlight.js Theme
 @import "highlight.js/scss/night-owl.scss";
 
