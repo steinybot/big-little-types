@@ -48,6 +48,7 @@ class TypedKeyableChildrenImplNewTypeUnsafeSpec extends AnyFlatSpec {
     @react
     object QuantifiedListItem {
       case class Props(amount: Int, children: String)
+
       val component = FunctionalComponent[Props] { props =>
         li(s"${props.children} * ${props.amount}")
       }
@@ -72,6 +73,7 @@ class TypedKeyableChildrenImplNewTypeUnsafeSpec extends AnyFlatSpec {
     @react
     object QuantifiedListItem {
       case class Props(amount: Int, children: String)
+
       val component = FunctionalComponent[Props] { props =>
         // We changed this!
         p(s"${props.children} * ${props.amount}")
@@ -107,12 +109,16 @@ class TypedKeyableChildrenImplNewTypeUnsafeSpec extends AnyFlatSpec {
       }
     }
 
+    val cherries: KeyAddingStage =
+      QuantifiedListItem(5)("Cherries")
+
+    val typedCherries: TypedKeyAddingStage[li.tagType] =
+      TypedKeyAddingStage.unsafe(cherries)
+
+    val fruit: Seq[TypedKeyAddingStage[li.tag.type]] = Seq(typedCherries)
+
     val caught = intercept[Throwable] {
-      RedList( //
-        TypedKeyAddingStage.unsafe(QuantifiedListItem(1)("Apple")),
-        TypedKeyAddingStage.unsafe(QuantifiedListItem(3)("Bananas")),
-        TypedKeyAddingStage.unsafe(QuantifiedListItem(5)("Cherries"))
-      )
+      val firstFruit: TypedKeyAddingStage[li.tag.type] = fruit.head
     }
     caught.getCause mustBe a[ClassCastException]
   }

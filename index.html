@@ -478,8 +478,14 @@ class TypedKeyAddingStage[Result](val stage: KeyAddingStage) extends AnyVal
         <section>
             <h2>Big Little Lies</h2>
             <div class="r-stack">
-                <pre><code class="language-scala" data-line-numbers=""><script type="text/template">
-trait Tag[Result]
+                <pre><code class="language-scala" data-line-numbers="1">
+<script type="text/template">trait Tag[Result]
+
+
+
+
+
+
 
 
 
@@ -491,8 +497,8 @@ trait Tag[Result]
 
 
                 </script></code></pre>
-                <pre><code class="fragment language-scala" data-line-numbers="4"><script type="text/template">
-trait Tag[Result]
+                <pre><code class="fragment language-scala" data-line-numbers="3">
+<script type="text/template">trait Tag[Result]
 
 type TypedKeyAddingStage[Result] = KeyAddingStage with Tag[Result]
 
@@ -503,9 +509,15 @@ type TypedKeyAddingStage[Result] = KeyAddingStage with Tag[Result]
 
 
 
+
+
+
+
+
+
                 </script></code></pre>
-                <pre><code class="fragment language-scala" data-line-numbers="6-9"><script type="text/template">
-trait Tag[Result]
+                <pre><code class="fragment language-scala" data-line-numbers="5-8">
+<script type="text/template">trait Tag[Result]
 
 type TypedKeyAddingStage[Result] = KeyAddingStage with Tag[Result]
 
@@ -516,9 +528,15 @@ object TypedKeyAddingStage {
 
 
 
+
+
+
+
+
+
                 </script></code></pre>
-                <pre><code class="fragment language-scala" data-line-numbers="11-12"><script type="text/template">
-trait Tag[Result]
+                <pre><code class="fragment language-scala" data-line-numbers="10-13">
+<script type="text/template">trait Tag[Result]
 
 type TypedKeyAddingStage[Result] = KeyAddingStage with Tag[Result]
 
@@ -527,8 +545,43 @@ object TypedKeyAddingStage {
     stage.asInstanceOf[TypedKeyAddingStage[Result]]
 }
 
-val cherriesStage: TypedKeyAddingStage[li.tagType] =
-  TypedKeyAddingStage.unsafe(QuantifiedListItem(5)("Cherries"))
+val cherries: KeyAddingStage = QuantifiedListItem(5)("Cherries")
+
+val typedCherries: TypedKeyAddingStage[li.tagType] =
+  TypedKeyAddingStage.unsafe(cherries)
+
+
+
+
+                </script></code></pre>
+                <pre><code class="fragment language-scala" data-line-numbers="15-18">
+<script type="text/template">trait Tag[Result]
+
+type TypedKeyAddingStage[Result] = KeyAddingStage with Tag[Result]
+
+object TypedKeyAddingStage {
+  def unsafe[Result](stage: KeyAddingStage) =
+    stage.asInstanceOf[TypedKeyAddingStage[Result]]
+}
+
+val cherries: KeyAddingStage = QuantifiedListItem(5)("Cherries")
+
+val typedCherries: TypedKeyAddingStage[li.tagType] =
+  TypedKeyAddingStage.unsafe(cherries)
+
+val fruit: Seq[TypedKeyAddingStage[li.tag.type]] = Seq(typedCherries)
+
+val firstFruit: TypedKeyAddingStage[li.tag.type] = fruit.head
+                </script></code></pre>
+                <pre><code class="fragment language-plaintext" style="color: #d3423e;">
+<script type="text/template">org.scalajs.linker.runtime.UndefinedBehaviorError:
+  java.lang.ClassCastException: object cannot be cast to slinky.core.KeyAddingStage
+    at $throwClassCastException(webpack:///./demo-test-fastopt.js?:53:9)
+    at $as_Lslinky_core_KeyAddingStage(webpack:///./demo-test-fastopt.js?:20372:87)
+    at eval(webpack:///./demo-test-fastopt.js?:64222:5)
+    at scala.scalajs.runtime.AnonFunction0.eval [as apply(webpack:///./demo-test-fastopt.js?:33697:43)
+    at org.scalatest.OutcomeOf.outcomeOf(webpack:///./demo-test-fastopt.js?:9667:7)
+    at org.scalatest.Transformer.eval [as apply(webpack:///./demo-test-fastopt.js?:41416:10)
                 </script></code></pre>
             </div>
         </section>

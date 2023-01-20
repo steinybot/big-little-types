@@ -1,14 +1,13 @@
 ThisBuild / scalaVersion := "2.13.10"
 
-lazy val root = project.in(file(".")).
-  aggregate(demo.js, demo.jvm).
-  settings(
+lazy val root = project.in(file("."))
+  .aggregate(demoJS, demoJVM)
+  .settings(
     publish := {},
     publishLocal := {}
   )
 
 lazy val demo = crossProject(JSPlatform, JVMPlatform).in(file("demo"))
-  .enablePlugins(ScalaJSBundlerPlugin)
   .settings(
     scalacOptions += "-Ymacro-annotations",
     libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.15" % "test"
@@ -32,3 +31,8 @@ lazy val demo = crossProject(JSPlatform, JVMPlatform).in(file("demo"))
       "source-map-support" -> "0.5.21"
     )
   )
+
+lazy val demoJS = demo.js
+  .enablePlugins(ScalaJSBundlerPlugin)
+
+lazy val demoJVM = demo.jvm
