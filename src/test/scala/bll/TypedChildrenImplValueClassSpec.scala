@@ -15,7 +15,7 @@ import scala.scalajs.js
 
 object TypedChildrenImplValueClassSpec {
 
-  class TypedReactElement[Result](val element: ReactElement) extends AnyVal
+  class TypedReactElement[Result] private (val element: ReactElement) extends AnyVal
 
   object TypedReactElement {
     implicit def apply[Result](tag: WithAttrs[Result]): TypedReactElement[Result] =
