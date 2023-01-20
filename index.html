@@ -347,7 +347,7 @@ val renderedTypedTag: TypedReactElement[li.tag.type] = tag
             </section>
             <section>
                 <h2>Type-Tagging With Value Classes</h2>
-                <pre><code class="language-scala" data-trim data-line-numbers=""><script type="text/template">
+                <pre><code class="language-scala" data-trim data-line-numbers="1,10"><script type="text/template">
 def RedList(children: TypedReactElement[li.tagType]*) =
   ul(style := js.Dynamic.literal(color = "red"))(children: _*)
 
@@ -364,7 +364,7 @@ def App: ReactElement =
             </section>
             <section>
                 <h2>Value Classes Are Not So Great</h2>
-                <pre><code class="language-plaintext" data-trim data-line-numbers="|7"><script type="text/template">
+                <pre><code class="language-plaintext" data-trim data-line-numbers="7"><script type="text/template">
 49: invokevirtual #217  // Method slinky/web/html/li$.apply:(Lscala/collection/immutable/Seq;)Lscala/scalajs/js/Array;
 52: invokevirtual #220  // Method Demo$TypedReactElement$.apply:(Lscala/scalajs/js/Array;)Lslinky/core/facade/ReactElement;
 55: invokespecial #244  // Method Demo$TypedReactElement."<init>":(Lslinky/core/facade/ReactElement;)V
@@ -377,7 +377,7 @@ def App: ReactElement =
         </section>
         <section>
             <h2>What About WithAttrs?</h2>
-            <pre><code class="language-scala" data-trim data-line-numbers="|1"><script type="text/template">
+            <pre><code class="language-scala" data-trim data-line-numbers="1,10"><script type="text/template">
 def RedList(children: WithAttrs[li.tagType]*) =
   ul(style := js.Dynamic.literal(color = "red"))(children: _*)
 
@@ -395,7 +395,7 @@ def App: ReactElement =
         <section>
             <h2>Remember KeyAddingStage?</h2>
             <div class="r-stack">
-                <pre><code class="language-scala" data-trim data-line-numbers="|11"><script type="text/template">
+                <pre><code class="language-scala" data-trim data-line-numbers="1,9-11|11"><script type="text/template">
 def RedList(children: ReactElement*) =
   ul(style := js.Dynamic.literal(color = "red"))(children)
 
@@ -471,9 +471,66 @@ def App: ReactElement =
         <section>
             <h2>How About TypedKeyAddingStage?</h2>
             <pre><code class="language-scala" data-trim data-line-numbers=""><script type="text/template">
-// Fails with: value class may not wrap another user-defined value class 😠
+// value class may not wrap another user-defined value class 😠
 class TypedKeyAddingStage[Result](val stage: KeyAddingStage) extends AnyVal
             </script></code></pre>
+        </section>
+        <section>
+            <h2>Big Little Lies</h2>
+            <div class="r-stack">
+                <pre><code class="language-scala" data-line-numbers=""><script type="text/template">
+trait Tag[Result]
+
+
+
+
+
+
+
+
+
+
+                </script></code></pre>
+                <pre><code class="fragment language-scala" data-line-numbers="4"><script type="text/template">
+trait Tag[Result]
+
+type TypedKeyAddingStage[Result] = KeyAddingStage with Tag[Result]
+
+
+
+
+
+
+
+
+                </script></code></pre>
+                <pre><code class="fragment language-scala" data-line-numbers="6-9"><script type="text/template">
+trait Tag[Result]
+
+type TypedKeyAddingStage[Result] = KeyAddingStage with Tag[Result]
+
+object TypedKeyAddingStage {
+  def unsafe[Result](stage: KeyAddingStage) =
+    stage.asInstanceOf[TypedKeyAddingStage[Result]]
+}
+
+
+
+                </script></code></pre>
+                <pre><code class="fragment language-scala" data-line-numbers="11-12"><script type="text/template">
+trait Tag[Result]
+
+type TypedKeyAddingStage[Result] = KeyAddingStage with Tag[Result]
+
+object TypedKeyAddingStage {
+  def unsafe[Result](stage: KeyAddingStage) =
+    stage.asInstanceOf[TypedKeyAddingStage[Result]]
+}
+
+val cherriesStage: TypedKeyAddingStage[li.tagType] =
+  TypedKeyAddingStage.unsafe(QuantifiedListItem(5)("Cherries"))
+                </script></code></pre>
+            </div>
         </section>
     </div>
 </div>
