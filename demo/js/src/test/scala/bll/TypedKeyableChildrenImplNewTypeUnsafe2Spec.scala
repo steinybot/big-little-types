@@ -1,6 +1,6 @@
 package bll
 
-import bll.TypedKeyableChildrenImplNewTypeUnsafeSpec.{TypedKeyAddingStage, TypedReactElement}
+import bll.TypedKeyableChildrenImplNewTypeUnsafe2Spec.{TypedKeyAddingStage, TypedReactElement}
 import org.scalajs.dom.document
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers._
@@ -14,7 +14,7 @@ import scala.scalajs.js
 
 // https://failex.blogspot.com/2017/04/the-high-cost-of-anyval-subclasses.html
 
-object TypedKeyableChildrenImplNewTypeUnsafeSpec {
+object TypedKeyableChildrenImplNewTypeUnsafe2Spec {
 
   class TypedReactElement[Result](val element: ReactElement) extends AnyVal
 
@@ -27,11 +27,13 @@ object TypedKeyableChildrenImplNewTypeUnsafeSpec {
       f.map(e)(cv.andThen(_.element))
   }
 
+  type Base = {
+    type __TypedKeyAddingStage
+  }
+
   trait Tag[Result]
 
-  // It doesn't matter which way around we put this.
-  type TypedKeyAddingStage[Result] = KeyAddingStage with Tag[Result]
-  //type TypedKeyAddingStage[Result] = Tag[Result] with KeyAddingStage
+  type TypedKeyAddingStage[Result] = Base with KeyAddingStage with Tag[Result]
 
   object TypedKeyAddingStage {
     def unsafe[Result](stage: KeyAddingStage) =
@@ -39,7 +41,7 @@ object TypedKeyableChildrenImplNewTypeUnsafeSpec {
   }
 }
 
-class TypedKeyableChildrenImplNewTypeUnsafeSpec extends AnyFlatSpec {
+class TypedKeyableChildrenImplNewTypeUnsafe2Spec extends AnyFlatSpec {
 
   behavior of "Typed keyable children"
 
@@ -119,9 +121,6 @@ class TypedKeyableChildrenImplNewTypeUnsafeSpec extends AnyFlatSpec {
 
     val fruit: Seq[TypedKeyAddingStage[li.tag.type]] = Seq(typedCherries)
 
-    val caught = intercept[Throwable] {
-      val firstFruit: TypedKeyAddingStage[li.tag.type] = fruit.head
-    }
-    caught.getCause mustBe a[ClassCastException]
+    val firstFruit: TypedKeyAddingStage[li.tag.type] = fruit.head
   }
 }
