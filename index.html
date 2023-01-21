@@ -573,17 +573,11 @@ val fruit: Seq[TypedKeyAddingStage[li.tag.type]] = Seq(typedCherries)
 
 val firstFruit: TypedKeyAddingStage[li.tag.type] = fruit.head
                 </script></code></pre>
-                <pre><code class="fragment language-plaintext" style="color: #d3423e;">
-<script type="text/template">org.scalajs.linker.runtime.UndefinedBehaviorError:
-  java.lang.ClassCastException: object cannot be cast to slinky.core.KeyAddingStage
-    at $throwClassCastException(webpack:///./demo-test-fastopt.js?:53:9)
-    at $as_Lslinky_core_KeyAddingStage(webpack:///./demo-test-fastopt.js?:20372:87)
-    at eval(webpack:///./demo-test-fastopt.js?:64222:5)
-    at scala.scalajs.runtime.AnonFunction0.eval [as apply(webpack:///./demo-test-fastopt.js?:33697:43)
-    at org.scalatest.OutcomeOf.outcomeOf(webpack:///./demo-test-fastopt.js?:9667:7)
-    at org.scalatest.Transformer.eval [as apply(webpack:///./demo-test-fastopt.js?:41416:10)
-                </script></code></pre>
             </div>
+            <pre><code class="fragment language-plaintext" data-trim style="color: #d3423e;"><script type="text/template">
+org.scalajs.linker.runtime.UndefinedBehaviorError:
+java.lang.ClassCastException: object cannot be cast to slinky.core.KeyAddingStage
+            </script></code></pre>
         </section>
     </div>
 </div>

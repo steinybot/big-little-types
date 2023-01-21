@@ -246,12 +246,12 @@ SOFTWARE.
 
 /* diff */
 .hljs-addition {
-  color: #addb67ff;
+  color: #addb67;
   font-style: italic;
 }
 
 .hljs-deletion {
-  color: #EF535090;
+  color: rgba(239, 83, 80, 0.5647058824);
   font-style: italic;
 }
 
@@ -604,4 +604,12 @@ SOFTWARE.
 }
 .reveal pre code {
   max-height: 95%;
+}
+
+.reveal pre {
+  box-shadow: none;
+}
+
+.reveal pre code.visible {
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
 }

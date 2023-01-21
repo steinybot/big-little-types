@@ -106,3 +106,14 @@ $heading4Size: 1.0em;
   // The theme sets this to a max of 400px.
   max-height: 95%;
 }
+
+
+// Remove the box-shadow from the pre and put it on the code when it is visible.
+.reveal pre {
+  box-shadow: none;
+}
+.reveal pre code.visible {
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+// TODO: Stop the box-shadow from stacking.
