@@ -1,4 +1,5 @@
-ThisBuild / scalaVersion := "2.13.10"
+val Scala_2_13 = "2.13.10"
+val Scala_3 = "3.2.1"
 
 lazy val root = project.in(file("."))
   .aggregate(demoJS, demoJVM)
@@ -9,8 +10,15 @@ lazy val root = project.in(file("."))
 
 lazy val demo = crossProject(JSPlatform, JVMPlatform).in(file("demo"))
   .settings(
-    scalacOptions += "-Ymacro-annotations",
-    libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.15" % "test"
+    scalaVersion := Scala_3,
+    crossScalaVersions := List(Scala_2_13, Scala_3),
+    scalacOptions ++= {
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, _)) => Seq("-Ymacro-annotations")
+        case _ => Seq.empty
+      }
+    },
+    libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.15" % Test
   )
   .jvmSettings()
   .jsSettings(
