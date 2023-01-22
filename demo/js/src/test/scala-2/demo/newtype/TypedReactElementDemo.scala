@@ -15,7 +15,7 @@ import Preamble._
 //demo/newtype/
 //
 
-//javap -c -p /Users/jason/src/big-little-types/demo/js/target/scala-2.13/test-classes/demo/newtype/TypedReactElementDemo$.class      ~/src/big-little-types
+//javap -c -p /Users/jason/src/big-little-types/demo/js/target/scala-2.13/test-classes/demo/newtype/TypedReactElementDemo$.class
 //Compiled from "TypedReactElementDemo.scala"
 //public final class demo.newtype.TypedReactElementDemo$ {
 //  public static final demo.newtype.TypedReactElementDemo$ MODULE$;

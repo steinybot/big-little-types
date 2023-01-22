@@ -1,6 +1,5 @@
 package demo.newtype
 
-import demo.newtype.{TypedFunctionalComponent, TypedKeyAddingStage, TypedReactElement}
 import slinky.core.WithAttrs
 import slinky.web.html.{li, p}
 
