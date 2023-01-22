@@ -12,7 +12,7 @@ object ExtensionMethods2:
   trait Tag[Result]
 
   object Tag:
-    implicit class Ops[Result](stage: TypedKeyAddingStage[Result]):
+    extension [Result](stage: TypedKeyAddingStage[Result])
       @inline def withKeyTyped(key: String): TypedReactElement[Result] =
         new TypedReactElement[Result](stage.asInstanceOf[KeyAddingStage].withKey(key))
 

@@ -9,11 +9,11 @@ object ValueClass1:
   class TypedReactElement[Result](val element: ReactElement) extends AnyVal
 
   object TypedReactElement:
-    implicit def fromTag[Result](tag: WithAttrs[Result]): TypedReactElement[Result] =
-      new TypedReactElement(tag)
+    given fromTag[Result]: Conversion[WithAttrs[Result], TypedReactElement[Result]] =
+      new TypedReactElement(_)
 
-    implicit def toReactElement(result: TypedReactElement[_]): ReactElement =
-      result.asInstanceOf[ReactElement]
+    given Conversion[TypedReactElement[?], ReactElement] =
+      _.asInstanceOf[ReactElement]
 
   val tag: WithAttrs[li.tag.type] = li("Apple")
 
