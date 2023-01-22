@@ -1,4 +1,4 @@
-package demo.newtype
+package demo.valueclass
 
 import slinky.core.KeyAddingStage
 
@@ -15,9 +15,9 @@ object TypedKeyAddingStage:
   object Tag:
     extension [Result](stage: TypedKeyAddingStage[Result])
       @inline def withKeyTyped(key: String): TypedReactElement[Result] =
-        stage.asInstanceOf[KeyAddingStage].withKey(key).asInstanceOf[TypedReactElement[Result]]
+        TypedReactElement.unsafe(stage.asInstanceOf[KeyAddingStage].withKey(key))
 
-  // TODO: Can Result be covariant?
+    // TODO: Can Result be covariant?
   type Type[Result] <: Base with KeyAddingStage with Tag
 
   @inline implicit def render[Props, Result](props: Props)(using

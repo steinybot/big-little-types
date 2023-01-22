@@ -1,4 +1,4 @@
-package demo.newtype
+package demo.valueclass
 
 import slinky.core.{FunctionalComponent, FunctionalComponentCore, FunctionalComponentName, KeyAddingStage}
 
@@ -22,6 +22,7 @@ object TypedFunctionalComponent:
   type Type[Props, Result] <: Base with FunctionalComponentCore[Props, TypedKeyAddingStage[Result], FunctionalComponent[Props]] with Tag
 
   @inline def apply[Props, Result](fn: Props => TypedReactElement[Result])(
-      using FunctionalComponentName
+    using FunctionalComponentName
   ): TypedFunctionalComponent[Props, Result] =
-    FunctionalComponent(fn).asInstanceOf[TypedFunctionalComponent[Props, Result]]
+    FunctionalComponent(fn.andThen(_.element)).asInstanceOf[TypedFunctionalComponent[Props, Result]]
+
