@@ -12,9 +12,7 @@ class TypedFunctionalComponentSpec extends AnyFlatSpec {
   behavior of "TypedFunctionalComponent"
 
   it should "be a FunctionalComponentCore" in {
-    // FIXME: This should be implicit.
-    val result: FunctionalComponentCore[Props, KeyAddingStage, FunctionalComponent[Props]] =
-      TypedFunctionalComponent.toFunctionalComponentCore(typedComponent)
+    val result: FunctionalComponentCore[Props, KeyAddingStage, FunctionalComponent[Props]] = typedComponent
     checkHtml(result(Props("Apple")), "<li>Apple</li>")
   }
 

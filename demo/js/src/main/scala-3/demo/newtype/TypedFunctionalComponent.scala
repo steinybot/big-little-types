@@ -4,13 +4,22 @@ import slinky.core.{FunctionalComponent, FunctionalComponentCore, FunctionalComp
 
 object TypedFunctionalComponent:
 
+  type Base = {
+    type __TypedFunctionalComponent
+  }
+
+  sealed trait Tag
+
+  object Tag:
+
+    given toFunctionalComponentCore[Props, Result]: Conversion[
+      TypedFunctionalComponent[Props, Result],
+      FunctionalComponentCore[Props, KeyAddingStage, FunctionalComponent[Props]]
+    ] = _.asInstanceOf[FunctionalComponentCore[Props, KeyAddingStage, FunctionalComponent[Props]]]
+
+  type Type[Props, Result] <: Base with FunctionalComponentCore[Props, TypedKeyAddingStage[Result], FunctionalComponent[Props]] with Tag
+
   @inline def apply[Props, Result](fn: Props => TypedReactElement[Result])(implicit
       name: FunctionalComponentName
   ): TypedFunctionalComponent[Props, Result] =
     FunctionalComponent(fn).asInstanceOf[TypedFunctionalComponent[Props, Result]]
-
-  // FIXME: This isn't being picked up correctly. Maybe we need a tag here too?
-  given toFunctionalComponentCore[Props, Result]: Conversion[
-      TypedFunctionalComponent[Props, Result],
-      FunctionalComponentCore[Props, KeyAddingStage, FunctionalComponent[Props]]
-  ] = _.asInstanceOf[FunctionalComponentCore[Props, KeyAddingStage, FunctionalComponent[Props]]]
