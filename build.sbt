@@ -10,7 +10,7 @@ lazy val root = project.in(file("."))
 
 lazy val demo = crossProject(JSPlatform, JVMPlatform).in(file("demo"))
   .settings(
-    scalaVersion := Scala_3,
+    scalaVersion := Scala_2_13,
     crossScalaVersions := List(Scala_2_13, Scala_3),
     scalacOptions ++= {
       CrossVersion.partialVersion(scalaVersion.value) match {
@@ -18,7 +18,8 @@ lazy val demo = crossProject(JSPlatform, JVMPlatform).in(file("demo"))
         case _ => Seq.empty
       }
     },
-    libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.15" % Test
+    libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.15" % Test,
+    Test / parallelExecution := false
   )
   .jvmSettings()
   .jsSettings(

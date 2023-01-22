@@ -308,7 +308,7 @@ def App =
   )
                 </script></code></pre>
                 <pre class="fragment"><code class="language-scala" data-trim data-line-numbers="1,10"><script type="text/template">
-def RedList(children: TypedReactElement[li.tagType]*) =
+def RedList(children: TypedReactElement[li.tag.type]*) =
   ul(style := js.Dynamic.literal(color = "red"))(children: _*)
 
 def QuantifiedListItem(amount: Int)(children: String) =
@@ -325,7 +325,7 @@ def App =
         </section>
         <section>
             <section>
-                <h2>Value Classes</h2>
+                <h2>Value Class</h2>
                 <div class="r-stack">
                     <pre><code class="language-scala" data-line-numbers="1">
 <script type="text/template">class TypedReactElement[Result](val element: ReactElement) extends AnyVal
@@ -338,25 +338,49 @@ def App =
 
 
 
+
+
+
                     </script></code></pre>
-                    <pre class="fragment"><code class="language-scala" data-line-numbers="3-6">
+                    <pre class="fragment"><code class="language-scala" data-line-numbers="3-5">
 <script type="text/template">class TypedReactElement[Result](val element: ReactElement) extends AnyVal
 
 object TypedReactElement {
   implicit def fromTag[Result](tag: WithAttrs[Result]): TypedReactElement[Result] =
     new TypedReactElement(tag)
+
+
+
 }
 
 
 
 
                     </script></code></pre>
-                    <pre class="fragment"><code class="language-scala" data-line-numbers="8-10|">
+                    <pre class="fragment"><code class="language-scala" data-line-numbers="7-8">
 <script type="text/template">class TypedReactElement[Result](val element: ReactElement) extends AnyVal
 
 object TypedReactElement {
   implicit def fromTag[Result](tag: WithAttrs[Result]): TypedReactElement[Result] =
     new TypedReactElement(tag)
+
+  implicit def toReactElement(result: TypedReactElement[_]): ReactElement =
+    result.asInstanceOf[ReactElement]
+}
+
+
+
+
+                    </script></code></pre>
+                    <pre class="fragment"><code class="language-scala" data-line-numbers="11-13|">
+<script type="text/template">class TypedReactElement[Result](val element: ReactElement) extends AnyVal
+
+object TypedReactElement {
+  implicit def fromTag[Result](tag: WithAttrs[Result]): TypedReactElement[Result] =
+    new TypedReactElement(tag)
+
+  implicit def toReactElement(result: TypedReactElement[_]): ReactElement =
+    result.asInstanceOf[ReactElement]
 }
 
 val tag: WithAttrs[li.tag.type] = li("Apple")
@@ -364,13 +388,13 @@ val tag: WithAttrs[li.tag.type] = li("Apple")
 val renderedTypedTag: TypedReactElement[li.tag.type] = tag
                     </script></code></pre>
                     <pre class="fragment"><code class="language-scala" data-trim data-line-numbers="1,10"><script type="text/template">
-def RedList(children: TypedReactElement[li.tagType]*) =
+def RedList(children: TypedReactElement[li.tag.type]*) =
   ul(style := js.Dynamic.literal(color = "red"))(children: _*)
 
 def QuantifiedListItem(amount: Int)(children: String) =
   li(s"$children * $amount")
 
-def App: ReactElement =
+def App =
   RedList(
     li("Apple"),
     p("Banana"), // This fails to compile 🥳
@@ -395,13 +419,13 @@ def App: ReactElement =
         <section>
             <h2>What About WithAttrs?</h2>
             <pre><code class="language-scala" data-trim data-line-numbers="1,10"><script type="text/template">
-def RedList(children: WithAttrs[li.tagType]*) =
+def RedList(children: WithAttrs[li.tag.type]*) =
   ul(style := js.Dynamic.literal(color = "red"))(children: _*)
 
 def QuantifiedListItem(amount: Int)(children: String) =
   li(s"$children * $amount")
 
-def App: ReactElement =
+def App =
   RedList(
     li("Apple"),
     p("Banana"), // This also fails to compile 🤔
@@ -413,7 +437,7 @@ def App: ReactElement =
             <h2>Remember KeyAddingStage?</h2>
             <div class="r-stack">
                 <pre><code class="language-scala" data-trim data-line-numbers="14-16"><script type="text/template">
-def RedList(children: TypedReactElement[li.tagType]*) =
+def RedList(children: TypedReactElement[li.tag.type]*) =
   ul(style := js.Dynamic.literal(color = "red"))(children)
 
 
@@ -424,15 +448,15 @@ def QuantifiedListItem(amount: Int)(children: String) =
 
 
 
-def App: ReactElement =
+def App =
   RedList(
-    li("Apple", html.key := "apple"),
-    li("Banana", html.key := "banana"),
+    li("Apple", key := "apple"),
+    li("Banana", key := "banana"),
     QuantifiedListItem(5)("Cherries") // Where does the key go?
   )
                 </script></code></pre>
                 <pre class="fragment"><code class="language-scala" data-trim data-line-numbers="4-10,16"><script type="text/template">
-def RedList(children: TypedReactElement[li.tagType]*) =
+def RedList(children: TypedReactElement[li.tag.type]*) =
   ul(style := js.Dynamic.literal(color = "red"))(children)
 
 @react
@@ -443,10 +467,10 @@ object QuantifiedListItem {
   }
 }
 
-def App: ReactElement =
+def App =
   RedList(
-    li("Apple", html.key := "apple"),
-    li("Banana", html.key := "banana"),
+    li("Apple", key := "apple"),
+    li("Banana", key := "banana"),
     QuantifiedListItem(5)("Cherries").withKey("cherries")
   )
                 </script></code></pre>
@@ -462,10 +486,10 @@ object QuantifiedListItem {
   }
 }
 
-def App: ReactElement =
+def App =
   RedList(
-    li("Apple", html.key := "apple"),
-    li("Banana", html.key := "banana"),
+    li("Apple", key := "apple"),
+    li("Banana", key := "banana"),
     QuantifiedListItem(5)("Cherries").withKey("cherries") // The type was lost 🤦
   )
                 </script></code></pre>
@@ -556,7 +580,7 @@ object TypedKeyAddingStage {
 
 val cherries: KeyAddingStage = QuantifiedListItem(5)("Cherries")
 
-val typedCherries: TypedKeyAddingStage[li.tagType] =
+val typedCherries: TypedKeyAddingStage[li.tag.type] =
   TypedKeyAddingStage.unsafe(cherries)
 
 
@@ -575,7 +599,7 @@ object TypedKeyAddingStage {
 
 val cherries: KeyAddingStage = QuantifiedListItem(5)("Cherries")
 
-val typedCherries: TypedKeyAddingStage[li.tagType] =
+val typedCherries: TypedKeyAddingStage[li.tag.type] =
   TypedKeyAddingStage.unsafe(cherries)
 
 val fruit: Seq[TypedKeyAddingStage[li.tag.type]] = Seq(typedCherries)
@@ -662,10 +686,10 @@ object QuantifiedListItem {
   }
 }
 
-def App: ReactElement =
+def App =
   RedList(
-    li("Apple", html.key := "apple"),
-    li("Banana", html.key := "banana"),
+    li("Apple", key := "apple"),
+    li("Banana", key := "banana"),
     QuantifiedListItem(5)("Cherries").withKey("cherries") // The type was lost 🤦
   )
                 </script></code></pre>
@@ -723,10 +747,10 @@ object QuantifiedListItem {
   }
 }
 
-def App: ReactElement =
+def App =
   RedList(
-    li("Apple", html.key := "apple"),
-    li("Banana", html.key := "banana"),
+    li("Apple", key := "apple"),
+    li("Banana", key := "banana"),
     QuantifiedListItem(5)("Cherries").withKey("cherries") // The type was lost 🤦
   )
                 </script></code></pre>
@@ -742,10 +766,10 @@ object QuantifiedListItem {
   }
 }
 
-def App: ReactElement =
+def App =
   RedList(
-    li("Apple", html.key := "apple"),
-    li("Banana", html.key := "banana"),
+    li("Apple", key := "apple"),
+    li("Banana", key := "banana"),
     TypedKeyAddingStage.unsafe(QuantifiedListItem(5)("Cherries"))
       .withKeyTyped("cherries")
   )
@@ -825,10 +849,10 @@ object QuantifiedListItem {
   }
 }
 
-def App: ReactElement =
+def App =
   RedList(
-    li("Apple", html.key := "apple"),
-    li("Banana", html.key := "banana"),
+    li("Apple", key := "apple"),
+    li("Banana", key := "banana"),
     QuantifiedListItem(5)("Cherries").withKeyTyped("cherries")
   )
                 </script></code></pre>
