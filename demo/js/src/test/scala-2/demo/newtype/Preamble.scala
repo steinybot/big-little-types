@@ -1,10 +1,9 @@
 package demo.newtype
 
-import demo.newtype.Preamble._
 import slinky.core.WithAttrs
 import slinky.web.html.{li, p}
 
-object Preamble:
+object Preamble {
 
   def tag: WithAttrs[li.tag.type] = li("Apple")
   def wrongTag: WithAttrs[p.tag.type] = p("Apple")
@@ -29,7 +28,4 @@ object Preamble:
 
   def typedKeyAddingStage: TypedKeyAddingStage[li.tag.type] = typedComponent(Props("Apple"))
   def wrongTypedKeyAddingStage: TypedKeyAddingStage[p.tag.type] = wrongTypedComponent(Props("Apple"))
-
-object Demo:
-
-  val item: TypedReactElement[li.tag.type] = tag
+}
