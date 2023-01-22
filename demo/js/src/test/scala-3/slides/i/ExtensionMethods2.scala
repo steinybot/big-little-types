@@ -16,9 +16,11 @@ object ExtensionMethods2:
       @inline def withKeyTyped(key: String): TypedReactElement[Result] =
         new TypedReactElement[Result](stage.asInstanceOf[KeyAddingStage].withKey(key))
 
+    given toTypedReactElement[Result]: Conversion[TypedKeyAddingStage[Result], TypedReactElement[Result]] =
+      KeyAddingStage.build(_).asInstanceOf[TypedReactElement[Result]]
+
   type TypedKeyAddingStage[Result] = Base with KeyAddingStage with Tag[Result]
 
   object TypedKeyAddingStage:
     def unsafe[Result](stage: KeyAddingStage) =
       stage.asInstanceOf[TypedKeyAddingStage[Result]]
-

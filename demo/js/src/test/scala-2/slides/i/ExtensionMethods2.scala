@@ -16,6 +16,10 @@ object ExtensionMethods2 {
       @inline def withKeyTyped(key: String): TypedReactElement[Result] =
         new TypedReactElement[Result](stage.asInstanceOf[KeyAddingStage].withKey(key))
     }
+
+    // TODO: This isn't in the slides.
+    implicit def toTypedReactElement[Result](stage: TypedKeyAddingStage[Result]) =
+      KeyAddingStage.build(stage).asInstanceOf[TypedReactElement[Result]]
   }
 
   type TypedKeyAddingStage[Result] = Base with KeyAddingStage with Tag[Result]

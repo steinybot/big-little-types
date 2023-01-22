@@ -15,10 +15,13 @@ lazy val demo = crossProject(JSPlatform, JVMPlatform).in(file("demo"))
     scalacOptions ++= {
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, _)) => Seq("-Ymacro-annotations")
-        case _ => Seq("-indent", "-rewrite")
+        case _ => Seq("-indent", "-rewrite", "-explain")
       }
     },
-    libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.15" % Test,
+    libraryDependencies ++= Seq(
+      "eu.timepit" %%% "refined" % "0.10.1",
+      "org.scalatest" %%% "scalatest" % "3.2.15" % Test
+    ),
     Test / parallelExecution := false
   )
   .jvmSettings()

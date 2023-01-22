@@ -859,7 +859,90 @@ def App =
             </div>
         </section>
         <section>
-            <h2>Refined Types</h2>
+            <section>
+                <h2>Refined Types</h2>
+                <div class="r-stack">
+                    <pre><code class="language-scala" data-line-numbers="18">
+<script type="text/template">
+
+
+
+
+@react
+object QuantifiedListItem {
+  case class Props(amount: Int, children: String)
+  val component = TypedFunctionalComponent[Props, li.tag.type] { props =>
+    li(s"${props.children} * ${props.amount}")
+  }
+}
+
+def App =
+  RedList(
+    li("Apple"),
+    li("Banana"),
+    QuantifiedListItem(-2)(" ") // We can do better 🧐
+  )
+                    </script></code></pre>
+                    <pre class="fragment"><code class="language-scala" data-trim data-line-numbers="1-4,8,18"><script type="text/template">
+object ItemTypes {
+  type ItemAmount = PosInt
+  type ItemName = String Refined (Trimmed And NonEmpty)
+}
+
+@react
+object QuantifiedListItem {
+  case class Props(amount: ItemAmount, children: ItemName)
+  val component = TypedFunctionalComponent[Props, li.tag.type] { props =>
+    li(s"${props.children} * ${props.amount}")
+  }
+}
+
+def App =
+  RedList(
+    li("Apple"),
+    li("Banana"),
+    QuantifiedListItem(-2)(" ") // Fails to compile 💪
+  )
+                    </script></code></pre>
+                    <pre class="fragment"><code class="language-scala" data-trim data-line-numbers="18|"><script type="text/template">
+object ItemTypes {
+  type ItemAmount = PosInt
+  type ItemName = String Refined (Trimmed And NonEmpty)
+}
+
+@react
+object QuantifiedListItem {
+  case class Props(amount: ItemAmount, children: ItemName)
+  val component = TypedFunctionalComponent[Props, li.tag.type] { props =>
+    li(s"${props.children} * ${props.amount}")
+  }
+}
+
+def App =
+  RedList(
+    li("Apple"),
+    li("Banana"),
+    QuantifiedListItem(5)("Cherries") // Compiles 🎉
+  )
+                    </script></code></pre>
+                </div>
+            </section>
+            <section>
+                <h2>Inside Refined</h2>
+                <pre><code class="language-scala" data-trim data-line-numbers="1|3-6|8-11|"><script type="text/template">
+class Refined[T, P](val value: T) extends AnyVal
+
+implicit def autoRefineV[T, P](t: T)(implicit
+    rt: RefType[Refined],
+    v: Validate[T, P]
+): Refined[T, P] = macro RefineMacro.impl[Refined, T, P]
+
+object Trimmed {
+  implicit def trimmedValidate: Validate.Plain[String, Trimmed] =
+    Validate.fromPredicate(s => s.trim == s, t => s"$t is trimmed", Trimmed())
+}
+                </script></code></pre>
+            </section>
         </section>
     </div>
 </div>
