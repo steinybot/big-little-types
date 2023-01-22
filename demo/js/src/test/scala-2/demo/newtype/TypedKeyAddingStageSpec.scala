@@ -2,9 +2,9 @@ package demo.newtype
 
 import demo.newtype.ReactSpec.checkHtml
 import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers._
 import slinky.core.KeyAddingStage
-import slinky.core.facade.ReactElement
-import slinky.web.html.li
+import slinky.web.html.{li, p}
 
 class TypedKeyAddingStageSpec extends AnyFlatSpec {
 
@@ -23,9 +23,18 @@ class TypedKeyAddingStageSpec extends AnyFlatSpec {
     checkHtml(result, "<li>Apple</li>")
   }
 
+  it should "fail to compile if the implicit typed component is wrong" in {
+    implicit val component: TypedFunctionalComponent[Props, p.tag.type] = wrongTypedComponent
+    """val result: TypedKeyAddingStage[li.tag.type] = Props("Apple")""" shouldNot typeCheck
+  }
+
   it should "be able to take a key" in {
     val result: TypedReactElement[li.tag.type] = typedKeyAddingStage.withKeyTyped("apple")
     checkHtml(result, "<li>Apple</li>")
+  }
+
+  it should "fail to compile if the result is wrong" in {
+    """val result: TypedKeyAddingStage[li.tag.type] = wrongTypedKeyAddingStage""" shouldNot typeCheck
   }
 
   it should "be able to go into a sequence and back out again" in {

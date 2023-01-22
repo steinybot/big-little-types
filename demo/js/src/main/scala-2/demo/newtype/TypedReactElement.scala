@@ -11,7 +11,8 @@ object TypedReactElement {
     type __TypedReactElement
   }
 
-  sealed trait Tag[Props] extends Any
+  // TODO: Is the type parameter needed?
+  sealed trait Tag[Result] extends Any
 
   // TODO: Can Result be covariant?
   type Type[Result] <: Base with ReactElement with Tag[Result]

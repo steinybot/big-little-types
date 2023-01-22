@@ -10,6 +10,7 @@ object TypedKeyAddingStage:
     type __TypedKeyAddingStage
   }
 
+  // TODO: Is the type parameter needed?
   sealed trait Tag[Result] extends Any
 
   object Tag:

@@ -4,6 +4,8 @@ import slinky.core.{FunctionalComponent, FunctionalComponentCore, FunctionalComp
 
 object TypedFunctionalComponent:
 
+  // This stuff is a bit crazy. See https://github.com/scala-js/scala-js/issues/4778 for the rationale.
+
   type Base = {
     type __TypedFunctionalComponent
   }
