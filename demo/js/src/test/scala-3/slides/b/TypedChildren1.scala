@@ -5,7 +5,7 @@ import slinky.web.html.{li, style, ul}
 
 import scala.scalajs.js
 
-object TypedChildren1 {
+object TypedChildren1:
 
   def RedList(children: ReactElement*) =
     ul(style := js.Dynamic.literal(color = "red"))(children: _*)
@@ -20,4 +20,3 @@ object TypedChildren1 {
       QuantifiedListItem(5)("Cherries")
     )
 
-}

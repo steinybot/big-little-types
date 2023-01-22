@@ -4,27 +4,23 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers._
 import slides.c.ValueClass1.TypedReactElement
 import slinky.core.FunctionalComponent
-import slinky.core.annotations.react
 import slinky.web.html.{key, li, style, ul}
 
 import scala.scalajs.js
 
-object KeyAddingStage2 {
+object KeyAddingStage2:
 
   def RedList(children: TypedReactElement[li.tag.type]*) =
     ul(style := js.Dynamic.literal(color = "red"))(children)
 
-  @react
-  object QuantifiedListItem {
+  object QuantifiedListItem:
     case class Props(amount: Int, children: String)
-
     val component = FunctionalComponent[Props] { props =>
       li(s"${props.children} * ${props.amount}")
     }
-  }
-}
+    def apply(amount: Int)(children: String) = component(Props(amount, children))
 
-class KeyAddingStage2 extends AnyFlatSpec {
+class KeyAddingStage2 extends AnyFlatSpec:
 
   import KeyAddingStage2._
 
@@ -40,4 +36,3 @@ class KeyAddingStage2 extends AnyFlatSpec {
       )
     """ shouldNot typeCheck
   }
-}

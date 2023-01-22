@@ -3,7 +3,7 @@ package slides.j
 import slides.i.ExtensionMethods2.TypedKeyAddingStage
 import slinky.core.{FunctionalComponent, FunctionalComponentCore}
 
-object TypedFunctionalComponent1 {
+object TypedFunctionalComponent1:
 
   type TypedFunctionalComponent[Props, Result] =
     FunctionalComponentCore[
@@ -11,4 +11,3 @@ object TypedFunctionalComponent1 {
       TypedKeyAddingStage[Result],
       FunctionalComponent[Props]
     ]
-}

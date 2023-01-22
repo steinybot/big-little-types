@@ -4,7 +4,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers._
 import slinky.core.KeyAddingStage
 
-class TypedKeyAddingStage1 extends AnyFlatSpec {
+class TypedKeyAddingStage1 extends AnyFlatSpec:
 
   behavior of "TypedKeyAddingStage1"
 
@@ -13,4 +13,3 @@ class TypedKeyAddingStage1 extends AnyFlatSpec {
     class TypedKeyAddingStage[Result](val stage: KeyAddingStage) extends AnyVal
     """ shouldNot compile
   }
-}

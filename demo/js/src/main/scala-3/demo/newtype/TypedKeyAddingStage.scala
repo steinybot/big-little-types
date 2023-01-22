@@ -2,7 +2,7 @@ package demo.newtype
 
 import slinky.core.KeyAddingStage
 
-object TypedKeyAddingStage {
+object TypedKeyAddingStage:
 
   // This stuff is a bit crazy. See https://github.com/scala-js/scala-js/issues/4778 for the rationale.
 
@@ -19,4 +19,3 @@ object TypedKeyAddingStage {
     props: Props
   )(implicit component: TypedFunctionalComponent[Props, Result]): TypedKeyAddingStage[Result] =
     component(props)
-}

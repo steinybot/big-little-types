@@ -7,16 +7,15 @@ import slinky.web.html.{li, p, style, ul}
 
 import scala.scalajs.js
 
-object TypedChildren3 {
+object TypedChildren3:
 
   def RedList(children: TypedReactElement[li.tag.type]*) =
     ul(style := js.Dynamic.literal(color = "red"))(children: _*)
 
   def QuantifiedListItem(amount: Int)(children: String) =
     li(s"$children * $amount")
-}
 
-class TypedChildren3 extends AnyFlatSpec {
+class TypedChildren3 extends AnyFlatSpec:
 
   import TypedChildren3._
 
@@ -32,4 +31,3 @@ class TypedChildren3 extends AnyFlatSpec {
       )
     """ shouldNot typeCheck
   }
-}

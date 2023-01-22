@@ -7,7 +7,7 @@ import org.scalatest.matchers.should.Matchers._
 
 import scala.scalajs.js
 
-object WithAttrs1 {
+object WithAttrs1:
 
   def RedList(children: WithAttrs[li.tag.type]*) =
     ul(style := js.Dynamic.literal(color = "red"))(children: _*)
@@ -15,9 +15,8 @@ object WithAttrs1 {
   def QuantifiedListItem(amount: Int)(children: String) =
     li(s"$children * $amount")
 
-}
 
-class WithAttrs1 extends AnyFlatSpec {
+class WithAttrs1 extends AnyFlatSpec:
 
   import WithAttrs1._
 
@@ -33,4 +32,3 @@ class WithAttrs1 extends AnyFlatSpec {
       )
     """ shouldNot typeCheck
   }
-}

@@ -7,7 +7,7 @@ import slinky.web.html.{li, p, style, ul}
 
 import scala.scalajs.js
 
-object ValueClass2 {
+object ValueClass2:
 
   def RedList(children: TypedReactElement[li.tag.type]*) =
     ul(style := js.Dynamic.literal(color = "red"))(children: _*)
@@ -15,9 +15,8 @@ object ValueClass2 {
   def QuantifiedListItem(amount: Int)(children: String) =
     li(s"$children * $amount")
 
-}
 
-class ValueClass2 extends AnyFlatSpec {
+class ValueClass2 extends AnyFlatSpec:
 
   import ValueClass2._
 
@@ -33,4 +32,3 @@ class ValueClass2 extends AnyFlatSpec {
       )
     """ shouldNot typeCheck
   }
-}

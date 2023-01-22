@@ -10,12 +10,12 @@ lazy val root = project.in(file("."))
 
 lazy val demo = crossProject(JSPlatform, JVMPlatform).in(file("demo"))
   .settings(
-    scalaVersion := Scala_2_13,
+    scalaVersion := Scala_3,
     crossScalaVersions := List(Scala_2_13, Scala_3),
     scalacOptions ++= {
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, _)) => Seq("-Ymacro-annotations")
-        case _ => Seq.empty
+        case _ => Seq("-indent", "-rewrite")
       }
     },
     libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.15" % Test,

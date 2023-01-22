@@ -1,7 +1,6 @@
 package slides
 
-package object a {
+package object a:
 
   case class Props(children: String, amount: Int)
 
-}

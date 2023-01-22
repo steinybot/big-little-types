@@ -4,7 +4,7 @@ import slinky.core.{FunctionalComponent, KeyAddingStage, WithAttrs}
 import slinky.core.facade.ReactElement
 import slinky.web.html.li
 
-object Slinky1 {
+object Slinky1:
 
   val tag: WithAttrs[li.tag.type] = li("Apple")
 
@@ -24,4 +24,3 @@ object Slinky1 {
 
   val renderedComponent: ReactElement = componentWithProps
 
-}

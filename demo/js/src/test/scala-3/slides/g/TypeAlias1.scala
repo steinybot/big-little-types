@@ -6,16 +6,15 @@ import slinky.core.KeyAddingStage
 import slinky.web.html.li
 import org.scalatest.matchers.should.Matchers._
 
-object TypeAlias1 {
+object TypeAlias1:
 
   trait Tag[Result]
 
   type TypedKeyAddingStage[Result] = KeyAddingStage with Tag[Result]
 
-  object TypedKeyAddingStage {
+  object TypedKeyAddingStage:
     def unsafe[Result](stage: KeyAddingStage) =
       stage.asInstanceOf[TypedKeyAddingStage[Result]]
-  }
 
   val cherries: KeyAddingStage = QuantifiedListItem(5)("Cherries")
 
@@ -23,9 +22,8 @@ object TypeAlias1 {
     TypedKeyAddingStage.unsafe(cherries)
 
   val fruit: Seq[TypedKeyAddingStage[li.tag.type]] = Seq(typedCherries)
-}
 
-class TypeAlias1 extends AnyFlatSpec {
+class TypeAlias1 extends AnyFlatSpec:
 
   import TypeAlias1._
 
@@ -38,4 +36,3 @@ class TypeAlias1 extends AnyFlatSpec {
     }
     caught.getCause shouldBe a[ClassCastException]
   }
-}

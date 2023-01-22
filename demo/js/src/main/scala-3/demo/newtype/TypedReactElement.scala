@@ -3,7 +3,7 @@ package demo.newtype
 import slinky.core.facade.ReactElement
 import slinky.core.{KeyAddingStage, WithAttrs}
 
-object TypedReactElement {
+object TypedReactElement:
 
   // This stuff is a bit crazy. See https://github.com/scala-js/scala-js/issues/4778 for the rationale.
 
@@ -22,4 +22,3 @@ object TypedReactElement {
   implicit def fromKeyAddingStage[Result](result: TypedKeyAddingStage[Result]): TypedReactElement[Result] =
     KeyAddingStage.build(result).asInstanceOf[TypedReactElement[Result]]
 
-}

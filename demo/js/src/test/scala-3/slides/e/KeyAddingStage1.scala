@@ -5,7 +5,7 @@ import slinky.web.html.{key, li, style, ul}
 
 import scala.scalajs.js
 
-object KeyAddingStage1 {
+object KeyAddingStage1:
 
   def RedList(children: TypedReactElement[li.tag.type]*) =
     ul(style := js.Dynamic.literal(color = "red"))(children)
@@ -25,4 +25,3 @@ object KeyAddingStage1 {
       QuantifiedListItem(5)("Cherries") // Where does the key go?
     )
 
-}
