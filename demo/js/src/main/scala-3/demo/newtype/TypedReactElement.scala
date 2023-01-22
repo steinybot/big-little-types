@@ -11,11 +11,10 @@ object TypedReactElement:
     type __TypedReactElement
   }
 
-  // TODO: Is the type parameter needed?
-  sealed trait Tag[Result] extends Any
+  sealed trait Tag extends Any
 
   // TODO: Can Result be covariant?
-  type Type[Result] <: Base with ReactElement with Tag[Result]
+  type Type[Result] <: Base with ReactElement with Tag
 
   implicit def fromWithAttrs[Result](result: WithAttrs[Result]): TypedReactElement[Result] =
     result().asInstanceOf[TypedReactElement[Result]]

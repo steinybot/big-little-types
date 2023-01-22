@@ -10,8 +10,7 @@ object TypedKeyAddingStage {
     type __TypedKeyAddingStage
   }
 
-  // TODO: Is the type parameter needed?
-  sealed trait Tag[Result] extends Any
+  sealed trait Tag extends Any
 
   object Tag {
     implicit class Ops[Result](stage: TypedKeyAddingStage[Result]) {
@@ -21,7 +20,7 @@ object TypedKeyAddingStage {
   }
 
     // TODO: Can Result be covariant?
-  type Type[Result] <: Base with KeyAddingStage with Tag[Result]
+  type Type[Result] <: Base with KeyAddingStage with Tag
 
   // TODO: How does this get found but the Ops doesn't unless it is put on the Tag?
   @inline implicit def render[Props, Result](props: Props)(implicit

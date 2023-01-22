@@ -10,8 +10,7 @@ object TypedKeyAddingStage:
     type __TypedKeyAddingStage
   }
 
-  // TODO: Is the type parameter needed?
-  sealed trait Tag[Result] extends Any
+  sealed trait Tag extends Any
 
   object Tag:
     extension [Result](stage: TypedKeyAddingStage[Result])
@@ -19,7 +18,7 @@ object TypedKeyAddingStage:
         stage.asInstanceOf[KeyAddingStage].withKey(key).asInstanceOf[TypedReactElement[Result]]
 
   // TODO: Can Result be covariant?
-  type Type[Result] <: Base with KeyAddingStage with Tag[Result]
+  type Type[Result] <: Base with KeyAddingStage with Tag
 
   @inline implicit def render[Props, Result](
     props: Props
