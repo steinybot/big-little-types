@@ -15,7 +15,7 @@ object TypedKeyAddingStage {
   object Tag {
     implicit class Ops[Result](stage: TypedKeyAddingStage[Result]) {
       @inline def withKeyTyped(key: String): TypedReactElement[Result] =
-        stage.asInstanceOf[KeyAddingStage].withKey(key).asInstanceOf[TypedReactElement[Result]]
+        TypedReactElement.unsafe(stage.asInstanceOf[KeyAddingStage].withKey(key))
     }
   }
 

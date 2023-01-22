@@ -16,10 +16,13 @@ object TypedReactElement {
   // TODO: Can Result be covariant?
   type Type[Result] <: Base with ReactElement with Tag
 
+  def unsafe[Result](element: ReactElement): TypedReactElement[Result] =
+    element.asInstanceOf[TypedReactElement[Result]]
+
   implicit def fromWithAttrs[Result](result: WithAttrs[Result]): TypedReactElement[Result] =
-    result().asInstanceOf[TypedReactElement[Result]]
+    unsafe(result())
 
   implicit def fromKeyAddingStage[Result](result: TypedKeyAddingStage[Result]): TypedReactElement[Result] =
-    KeyAddingStage.build(result).asInstanceOf[TypedReactElement[Result]]
+    unsafe(KeyAddingStage.build(result))
 
 }
