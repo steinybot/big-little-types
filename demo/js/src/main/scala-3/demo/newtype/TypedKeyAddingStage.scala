@@ -12,6 +12,11 @@ object TypedKeyAddingStage:
 
   sealed trait Tag[Result] extends Any
 
+  object Tag:
+    extension [Result](stage: TypedKeyAddingStage[Result])
+      @inline def withKeyTyped(key: String): TypedReactElement[Result] =
+        stage.asInstanceOf[KeyAddingStage].withKey(key).asInstanceOf[TypedReactElement[Result]]
+
   // TODO: Can Result be covariant?
   type Type[Result] <: Base with KeyAddingStage with Tag[Result]
 
