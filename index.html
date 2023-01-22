@@ -325,7 +325,7 @@ def App =
         </section>
         <section>
             <section>
-                <h2>Type-Tagging With Value Classes</h2>
+                <h2>Value Classes</h2>
                 <div class="r-stack">
                     <pre><code class="language-scala" data-line-numbers="1">
 <script type="text/template">class TypedReactElement[Result](val element: ReactElement) extends AnyVal
@@ -343,7 +343,7 @@ def App =
 <script type="text/template">class TypedReactElement[Result](val element: ReactElement) extends AnyVal
 
 object TypedReactElement {
-  implicit def apply[Result](tag: WithAttrs[Result]): TypedReactElement[Result] =
+  implicit def fromTag[Result](tag: WithAttrs[Result]): TypedReactElement[Result] =
     new TypedReactElement(tag)
 }
 
@@ -351,11 +351,11 @@ object TypedReactElement {
 
 
                     </script></code></pre>
-                    <pre class="fragment"><code class="language-scala" data-line-numbers="8-10">
+                    <pre class="fragment"><code class="language-scala" data-line-numbers="8-10|">
 <script type="text/template">class TypedReactElement[Result](val element: ReactElement) extends AnyVal
 
 object TypedReactElement {
-  implicit def apply[Result](tag: WithAttrs[Result]): TypedReactElement[Result] =
+  implicit def fromTag[Result](tag: WithAttrs[Result]): TypedReactElement[Result] =
     new TypedReactElement(tag)
 }
 
@@ -363,11 +363,7 @@ val tag: WithAttrs[li.tag.type] = li("Apple")
 
 val renderedTypedTag: TypedReactElement[li.tag.type] = tag
                     </script></code></pre>
-                </div>
-            </section>
-            <section>
-                <h2>Type-Tagging With Value Classes</h2>
-                <pre><code class="language-scala" data-trim data-line-numbers="1,10"><script type="text/template">
+                    <pre class="fragment"><code class="language-scala" data-trim data-line-numbers="1,10"><script type="text/template">
 def RedList(children: TypedReactElement[li.tagType]*) =
   ul(style := js.Dynamic.literal(color = "red"))(children: _*)
 
@@ -380,10 +376,11 @@ def App: ReactElement =
     p("Banana"), // This fails to compile 🥳
     QuantifiedListItem(5)("Cherries")
   )
-                </script></code></pre>
+                    </script></code></pre>
+                </div>
             </section>
             <section>
-                <h2>Value Classes Are Not So Great</h2>
+                <h2>Unexpected Allocation</h2>
                 <pre><code class="language-plaintext" data-trim data-line-numbers="7"><script type="text/template">
 49: invokevirtual #217  // Method slinky/web/html/li$.apply:(Lscala/collection/immutable/Seq;)Lscala/scalajs/js/Array;
 52: invokevirtual #220  // Method Demo$TypedReactElement$.apply:(Lscala/scalajs/js/Array;)Lslinky/core/facade/ReactElement;
@@ -475,14 +472,20 @@ def App: ReactElement =
             </div>
         </section>
         <section>
-            <h2>How About TypedKeyAddingStage?</h2>
-            <pre><code class="language-scala" data-trim data-line-numbers=""><script type="text/template">
+            <h2>TypedKeyAddingStage?</h2>
+            <div class="r-stack">
+                <pre><code class="language-scala" data-trim data-line-numbers=""><script type="text/template">
+class TypedKeyAddingStage[Result](val stage: KeyAddingStage) extends AnyVal
+
+                </script></code></pre>
+                <pre class="fragment"><code class="language-scala" data-trim data-line-numbers=""><script type="text/template">
 class TypedKeyAddingStage[Result](val stage: KeyAddingStage) extends AnyVal
 // value class may not wrap another user-defined value class 😠
-            </script></code></pre>
+                </script></code></pre>
+            </div>
         </section>
         <section>
-            <h2>Big Little Lies</h2>
+            <h2>Type Alias</h2>
             <div class="r-stack">
                 <pre><code class="language-scala" data-line-numbers="1">
 <script type="text/template">trait Tag[Result]
@@ -587,7 +590,7 @@ java.lang.ClassCastException: object cannot be cast to slinky.core.KeyAddingStag
         </section>
         <section>
             <section>
-                <h2>Big Little Lies</h2>
+                <h2>Structural Refinement</h2>
                 <div class="r-stack">
                     <pre><code class="language-scala" data-line-numbers="1-3,7">
 <script type="text/template">
@@ -608,7 +611,7 @@ val typedCherries = TypedKeyAddingStage.unsafe(cherries)
 val fruit         = Seq(typedCherries)
 val firstFruit    = fruit.head
                     </script></code></pre>
-                    <pre class="fragment"><code class="language-scala" data-line-numbers="1-3,7">
+                    <pre class="fragment"><code class="language-scala" data-line-numbers="1-3,7|">
 <script type="text/template">type Base = {
   type __TypedKeyAddingStage
 }
@@ -630,11 +633,12 @@ val firstFruit    = fruit.head
                 </div>
             </section>
             <section>
-                <h2>Big Little Lies</h2>
+                <h2>Avoiding Allocation</h2>
                 <pre><code class="language-diff" data-trim><script type="text/template">
  14: invokevirtual #54        // Method bll/DemoSpec$TypedKeyAddingStage$.unsafe:
 -                             //   (Lscala/scalajs/js/Array;)Lscala/scalajs/js/Array;
 +                             //   (Lscala/scalajs/js/Array;)Ljava/lang/Object;
+ ...
  31: invokeinterface #71,  1  // InterfaceMethod scala/collection/immutable/Seq.head:
                               //   ()Ljava/lang/Object;
 -36: checkcast     #73        // class slinky/core/KeyAddingStage
@@ -642,6 +646,193 @@ val firstFruit    = fruit.head
 -                             //   ()Lscala/scalajs/js/Array;
                 </script></code></pre>
             </section>
+        </section>
+        <section>
+            <h2>Extension Methods</h2>
+            <div class="r-stack">
+                <pre><code class="language-scala" data-trim data-line-numbers="16"><script type="text/template">
+def RedList(children: TypedReactElement[li.tag.type]*) =
+  ul(style := js.Dynamic.literal(color = "red"))(children)
+
+@react
+object QuantifiedListItem {
+  case class Props(amount: Int, children: String)
+  val component = FunctionalComponent[Props] { props =>
+    li(s"${props.children} * ${props.amount}")
+  }
+}
+
+def App: ReactElement =
+  RedList(
+    li("Apple", html.key := "apple"),
+    li("Banana", html.key := "banana"),
+    QuantifiedListItem(5)("Cherries").withKey("cherries") // The type was lost 🤦
+  )
+                </script></code></pre>
+                <pre class="fragment"><code class="language-scala" data-trim data-line-numbers=""><script type="text/template">
+type Base = {
+  type __TypedKeyAddingStage
+}
+
+trait Tag[Result]
+
+
+
+
+
+
+
+
+type TypedKeyAddingStage[Result] = Base with KeyAddingStage with Tag[Result]
+
+object TypedKeyAddingStage {
+  def unsafe[Result](stage: KeyAddingStage) =
+    stage.asInstanceOf[TypedKeyAddingStage[Result]]
+}
+                </script></code></pre>
+                <pre class="fragment"><code class="language-scala" data-trim data-line-numbers="7-12|"><script type="text/template">
+type Base = {
+  type __TypedKeyAddingStage
+}
+
+trait Tag[Result]
+
+object Tag {
+  implicit class Ops[Result](stage: TypedKeyAddingStage[Result]) {
+    @inline def withKeyTyped(key: String): TypedReactElement[Result] =
+      new TypedReactElement[Result](stage.asInstanceOf[KeyAddingStage].withKey(key))
+  }
+}
+
+type TypedKeyAddingStage[Result] = Base with KeyAddingStage with Tag[Result]
+
+object TypedKeyAddingStage {
+  def unsafe[Result](stage: KeyAddingStage) =
+    stage.asInstanceOf[TypedKeyAddingStage[Result]]
+}
+                </script></code></pre>
+                <pre class="fragment"><code class="language-scala" data-trim data-line-numbers="16"><script type="text/template">
+def RedList(children: TypedReactElement[li.tag.type]*) =
+  ul(style := js.Dynamic.literal(color = "red"))(children)
+
+@react
+object QuantifiedListItem {
+  case class Props(amount: Int, children: String)
+  val component = FunctionalComponent[Props] { props =>
+    li(s"${props.children} * ${props.amount}")
+  }
+}
+
+def App: ReactElement =
+  RedList(
+    li("Apple", html.key := "apple"),
+    li("Banana", html.key := "banana"),
+    QuantifiedListItem(5)("Cherries").withKey("cherries") // The type was lost 🤦
+  )
+                </script></code></pre>
+                <pre class="fragment"><code class="language-scala" data-trim data-line-numbers="16"><script type="text/template">
+def RedList(children: TypedReactElement[li.tag.type]*) =
+  ul(style := js.Dynamic.literal(color = "red"))(children)
+
+@react
+object QuantifiedListItem {
+  case class Props(amount: Int, children: String)
+  val component = FunctionalComponent[Props] { props =>
+    li(s"${props.children} * ${props.amount}")
+  }
+}
+
+def App: ReactElement =
+  RedList(
+    li("Apple", html.key := "apple"),
+    li("Banana", html.key := "banana"),
+    TypedKeyAddingStage.unsafe(QuantifiedListItem(5)("Cherries"))
+      .withKeyTyped("cherries")
+  )
+                </script></code></pre>
+            </div>
+        </section>
+        <section>
+            <h2>TypedFunctionalComponent</h2>
+            <div class="r-stack">
+                <pre><code class="language-scala" data-line-numbers="1-6">
+<script type="text/template">class FunctionalComponent[Props](val component: js.Function) extends AnyVal with
+  FunctionalComponentCore[
+    Props,
+    KeyAddingStage,
+    FunctionalComponent[Props]
+  ]
+
+
+
+
+
+
+
+                </script></code></pre>
+                <pre class="fragment"><code class="language-scala" data-line-numbers="1,8|4,11|">
+<script type="text/template">class FunctionalComponent[Props](val component: js.Function) extends AnyVal with
+  FunctionalComponentCore[
+    Props,
+    KeyAddingStage,
+    FunctionalComponent[Props]
+  ]
+
+type TypedFunctionalComponent[Props, Result] =
+  FunctionalComponentCore[
+    Props,
+    TypedKeyAddingStage[Result],
+    FunctionalComponent[Props]
+  ]
+                </script></code></pre>
+                <pre class="fragment"><code class="language-scala" data-line-numbers="1-5">
+<script type="text/template">object FunctionalComponent {
+  def apply[Props](fn: Props => ReactElement):
+    FunctionalComponent[Props] =
+      new FunctionalComponent[Props](???)
+}
+
+
+
+
+
+
+
+                </script></code></pre>
+                <pre class="fragment"><code class="language-scala" data-trim data-line-numbers="1,7|2,8|3,9|4,10-11|"><script type="text/template">
+object FunctionalComponent {
+  def apply[Props](fn: Props => ReactElement):
+    FunctionalComponent[Props] =
+      new FunctionalComponent[Props](???)
+}
+
+object TypedFunctionalComponent {
+  def apply[Props, Result](fn: Props => TypedReactElement[Result]):
+    TypedFunctionalComponent[Props, Result] =
+      FunctionalComponent(fn.andThen(_.element))
+        .asInstanceOf[TypedFunctionalComponent[Props, Result]]
+}
+                </script></code></pre>
+                <pre class="fragment"><code class="language-scala" data-trim data-line-numbers="7|16|"><script type="text/template">
+def RedList(children: TypedReactElement[li.tag.type]*) =
+  ul(style := js.Dynamic.literal(color = "red"))(children)
+
+@react
+object QuantifiedListItem {
+  case class Props(amount: Int, children: String)
+  val component = TypedFunctionalComponent[Props, li.tag.type] { props =>
+    li(s"${props.children} * ${props.amount}")
+  }
+}
+
+def App: ReactElement =
+  RedList(
+    li("Apple", html.key := "apple"),
+    li("Banana", html.key := "banana"),
+    QuantifiedListItem(5)("Cherries").withKeyTyped("cherries")
+  )
+                </script></code></pre>
+            </div>
         </section>
     </div>
 </div>
