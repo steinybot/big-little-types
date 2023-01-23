@@ -11,9 +11,9 @@ object TypedKeyableChildrenImplNewTypeUnsafeSpec {
   trait ReactElement
   final class KeyAddingStage(private val args: Array[Any]) extends AnyVal
 
-  trait Tag[Result]
+  trait Tag
 
-  type TypedKeyAddingStage[Result] = KeyAddingStage with Tag[Result]
+  type TypedKeyAddingStage[Result] = KeyAddingStage with Tag
 
   object TypedKeyAddingStage {
     def unsafe[Result](stage: KeyAddingStage) =

@@ -9,7 +9,7 @@ object ExtensionMethods2:
     type __TypedKeyAddingStage
   }
 
-  trait Tag[Result]
+  trait Tag
 
   object Tag:
     extension [Result](stage: TypedKeyAddingStage[Result])
@@ -19,7 +19,7 @@ object ExtensionMethods2:
     given toTypedReactElement[Result]: Conversion[TypedKeyAddingStage[Result], TypedReactElement[Result]] =
       KeyAddingStage.build(_).asInstanceOf[TypedReactElement[Result]]
 
-  type TypedKeyAddingStage[Result] = Base with KeyAddingStage with Tag[Result]
+  type TypedKeyAddingStage[Result] = Base with KeyAddingStage with Tag
 
   object TypedKeyAddingStage:
     def unsafe[Result](stage: KeyAddingStage) =

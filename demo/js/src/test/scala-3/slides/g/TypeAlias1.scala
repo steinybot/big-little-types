@@ -8,9 +8,9 @@ import org.scalatest.matchers.should.Matchers._
 
 object TypeAlias1:
 
-  trait Tag[Result]
+  trait Tag
 
-  type TypedKeyAddingStage[Result] = KeyAddingStage with Tag[Result]
+  type TypedKeyAddingStage[Result] = KeyAddingStage with Tag
 
   object TypedKeyAddingStage:
     def unsafe[Result](stage: KeyAddingStage) =

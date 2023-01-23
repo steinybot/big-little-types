@@ -132,6 +132,12 @@ export default function App() {
   );
 }
                 </script></code></pre>
+                <aside class="notes">
+                    <pre>
+1) Elements
+2) Component and Props
+                    </pre>
+                </aside>
             </section>
         </section>
         <section>
@@ -188,20 +194,39 @@ export default function App() {
                 </div>
             </div>
 <!--        <ul>https://flow.org/en/docs/react/children/#toc-only-allowing-a-specific-element-type-as-children</ul>-->
+            <aside class="notes">
+                <pre>
+1) The type of children is ReactElement, i.e. untyped.
+2) Pass in any HTML element
+3) Get semantically invalid HTML
+                </pre>
+            </aside>
         </section>
         <section>
-            <section>
-                <h2>Scala.js</h2>
-                <h3>Scala for the web</h3>
-                <ul>
-                    <li class="fragment">Now a built-in target for the Scala compiler</li>
-                    <li class="fragment">Outputs .sjsir and .class files</li>
-                    <li class="fragment">Scala.js linker produces .js files</li>
-                    <li class="fragment">Same semantics as JVM (mostly)</li>
-                    <li class="fragment">Very good JavaScript interoperability</li>
-                    <li class="fragment">Generate Scala.js facades from TypeScript</li>
-                </ul>
-            </section>
+            <h2>Scala.js</h2>
+            <h3>Scala for the web</h3>
+            <ul>
+                <li class="fragment">Now a built-in target for the Scala compiler</li>
+                <li class="fragment">Outputs .sjsir and .class files</li>
+                <li class="fragment">Scala.js linker produces .js files</li>
+                <li class="fragment">Same semantics as JVM (mostly)</li>
+                <li class="fragment">Very good JavaScript interoperability</li>
+                <li class="fragment">Generate Scala.js facades from TypeScript (<a href="https://scalablytyped.org/docs/readme.html">ScalablyTyped</a>)</li>
+            </ul>
+            <aside class="notes">
+                <pre>
+1) Enough about Typescript let's move on to Scala.js
+
+JVM semantics with JS interop?
+- 2 different type hierarchies (Any and js.Any)
+- 3 different implementations:
+  - 1) Scala types - not visible to JS
+  - 2) JS native types - JS types implemented in JS with Scala.js facade
+  - 3) Scala.js non-native types - JS types implemented in Scala.js
+
+ScalablyTyped
+                </pre>
+            </aside>
         </section>
         <section>
             <section>
@@ -225,6 +250,11 @@ val componentWithKey: ReactElement = componentWithProps.withKey("cherries")
 
 val renderedComponent: ReactElement = componentWithProps
                 </script></code></pre>
+                <aside class="notes">
+                    <pre>
+Slinky is a Scala.js library for writing React apps that mirrors the JS API.
+                    </pre>
+                </aside>
             </section>
             <section>
                 <h2>Slinky</h2>
@@ -242,6 +272,12 @@ def App =
     QuantifiedListItem(5)("Cherries")
   )
                 </script></code></pre>
+                <aside class="notes">
+                    <pre>
+1) Here I'm am highlighting the HTML elements or "tags".
+2) And these are the components and their props.
+                    </pre>
+                </aside>
             </section>
             <section>
                 <h2>Slinky</h2>
@@ -274,6 +310,14 @@ object App {
   }
 }
                 </script></code></pre>
+                <aside class="notes">
+                    <pre>
+The previous slide showed the components implemented as just functions.
+Here they are FunctionalComponents with case classes for props.
+Case classes are essentially record types.
+That @react annotation is a macro which reduces some boilerplate.
+                    </pre>
+                </aside>
             </section>
         </section>
         <section>
@@ -322,6 +366,15 @@ def App =
   )
                 </script></code></pre>
             </div>
+            <aside class="notes">
+                <pre>
+1) Back to the problem!
+   We have a RedList component which takes any ReactElement.
+2) If we pass in a paragraph then it compiles.
+3) What we really want is one that only takes list items.
+   Let's see how we might make a TypedReactElement.
+                </pre>
+            </aside>
         </section>
         <section>
             <section>
@@ -402,6 +455,32 @@ def App =
   )
                     </script></code></pre>
                 </div>
+                <aside class="notes">
+                    <pre>
+1) Let's try something simple, a value class.
+   A value class is a wrapper around an existing value.
+   It is like other value types such as Int, Double, Boolean.
+   It might end up being boxed and unboxed.
+   NOTE: How the TypedReactElement has the Result type parameter.
+
+2) We don't want to have to manually wrap everything so we
+   create an implicit conversion from a tag to a TypedReactElement.
+   The type of tag, WithAttrs already has the result so we pass that along.
+
+3) We also want to automatically unwrap it.
+
+4) Here it is in action.
+   NOTE: We are going from a WithAttrs to a TypedReactElement automatically
+   and the Result type stays.
+
+-------------
+
+Now if we look back at our example we get what we wanted.
+
+There is no implicit conversion from WithAttrs[paragraph] to
+TypedReactElement[list item]
+                    </pre>
+                </aside>
             </section>
             <section>
                 <h2>Unexpected Allocation</h2>
@@ -414,6 +493,11 @@ def App =
 60: iconst_1
 61: new           #10   // class Demo$TypedReactElement
                 </script></code></pre>
+                <aside class="notes">
+                    <pre>
+The downside is that if we look at the byte code we see there is a new instance being created here.
+                    </pre>
+                </aside>
             </section>
         </section>
         <section>
@@ -432,11 +516,19 @@ def App =
     QuantifiedListItem(5)("Cherries")
   )
             </script></code></pre>
+            <aside class="notes">
+                <pre>
+You might have picked up that if WithAttrs already has the Result
+type then why not just use that?
+
+As you can see here this also fails to compile which is what we want.
+                </pre>
+            </aside>
         </section>
         <section>
             <h2>Remember KeyAddingStage?</h2>
             <div class="r-stack">
-                <pre><code class="language-scala" data-trim data-line-numbers="14-16"><script type="text/template">
+                <pre><code class="language-scala" data-trim data-line-numbers="5-6,14-16"><script type="text/template">
 def RedList(children: TypedReactElement[li.tag.type]*) =
   ul(style := js.Dynamic.literal(color = "red"))(children)
 
@@ -494,6 +586,20 @@ def App =
   )
                 </script></code></pre>
             </div>
+            <aside class="notes">
+                <pre>
+Here the QuantifiedListItem is just a function which is going
+to return a WithAttrs.
+WithAttrs already has all its attributes and so where does the key go?
+
+Remember what we get from applying props to a FunctionalComponent?
+It is a KeyAddingStage. That has a withKey method.
+
+But that ain't going to work.
+KeyAddingStage doesn't know about our Result type.
+withKey returns a ReactElement not our TypedReactElement.
+                </pre>
+            </aside>
         </section>
         <section>
             <h2>TypedKeyAddingStage?</h2>
@@ -507,33 +613,23 @@ class TypedKeyAddingStage[Result](val stage: KeyAddingStage) extends AnyVal
 // value class may not wrap another user-defined value class 😠
                 </script></code></pre>
             </div>
+            <aside class="notes">
+                <pre>
+So we need the KeyAddingStage to retain the Result type too.
+
+How about creating a TypedKeyAddingStage?
+
+Damn that isn't going to work. Now what?
+                </pre>
+            </aside>
         </section>
         <section>
             <h2>Type Alias</h2>
             <div class="r-stack">
-                <pre><code class="language-scala" data-line-numbers="1">
-<script type="text/template">trait Tag[Result]
+                <pre><code class="language-scala" data-line-numbers="1-3">
+<script type="text/template">trait Tag
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                </script></code></pre>
-                <pre class="fragment"><code class="language-scala" data-line-numbers="3">
-<script type="text/template">trait Tag[Result]
-
-type TypedKeyAddingStage[Result] = KeyAddingStage with Tag[Result]
+type TypedKeyAddingStage[Result] = KeyAddingStage with Tag
 
 
 
@@ -550,9 +646,9 @@ type TypedKeyAddingStage[Result] = KeyAddingStage with Tag[Result]
 
                 </script></code></pre>
                 <pre class="fragment"><code class="language-scala" data-line-numbers="5-8">
-<script type="text/template">trait Tag[Result]
+<script type="text/template">trait Tag
 
-type TypedKeyAddingStage[Result] = KeyAddingStage with Tag[Result]
+type TypedKeyAddingStage[Result] = KeyAddingStage with Tag
 
 object TypedKeyAddingStage {
   def unsafe[Result](stage: KeyAddingStage) =
@@ -569,9 +665,9 @@ object TypedKeyAddingStage {
 
                 </script></code></pre>
                 <pre class="fragment"><code class="language-scala" data-line-numbers="10-13">
-<script type="text/template">trait Tag[Result]
+<script type="text/template">trait Tag
 
-type TypedKeyAddingStage[Result] = KeyAddingStage with Tag[Result]
+type TypedKeyAddingStage[Result] = KeyAddingStage with Tag
 
 object TypedKeyAddingStage {
   def unsafe[Result](stage: KeyAddingStage) =
@@ -588,9 +684,9 @@ val typedCherries: TypedKeyAddingStage[li.tag.type] =
 
                 </script></code></pre>
                 <pre class="fragment"><code class="language-scala" data-line-numbers="15-18|">
-<script type="text/template">trait Tag[Result]
+<script type="text/template">trait Tag
 
-type TypedKeyAddingStage[Result] = KeyAddingStage with Tag[Result]
+type TypedKeyAddingStage[Result] = KeyAddingStage with Tag
 
 object TypedKeyAddingStage {
   def unsafe[Result](stage: KeyAddingStage) =
@@ -611,6 +707,22 @@ val firstFruit: TypedKeyAddingStage[li.tag.type] = fruit.head
 org.scalajs.linker.runtime.UndefinedBehaviorError:
 java.lang.ClassCastException: object cannot be cast to slinky.core.KeyAddingStage
             </script></code></pre>
+            <aside class="notes">
+                <pre>
+1) Scala has a simple feature called a type alias.
+   We can take whatever types we like (real or not) and give them a new name.
+   In this case we take the untyped KeyAddingStage and create an intersection with
+   a new trait called Tag.
+
+2) Next we create a function call unsafe which can take an untyped KeyAddingStage
+   and tag it with the Result type.
+   This is named unsafe because there is nothing restricting what Result can be.
+
+3) So far so good.
+
+4) Oh bummer. The cast really is unsafe.
+                </pre>
+            </aside>
         </section>
         <section>
             <section>
@@ -621,9 +733,9 @@ java.lang.ClassCastException: object cannot be cast to slinky.core.KeyAddingStag
 
 
 
-trait Tag[Result]
+trait Tag
 
-type TypedKeyAddingStage[Result] = KeyAddingStage with Tag[Result]
+type TypedKeyAddingStage[Result] = KeyAddingStage with Tag
 
 object TypedKeyAddingStage {
   def unsafe[Result](stage: KeyAddingStage) =
@@ -640,9 +752,9 @@ val firstFruit    = fruit.head
   type __TypedKeyAddingStage
 }
 
-trait Tag[Result]
+trait Tag
 
-type TypedKeyAddingStage[Result] = Base with KeyAddingStage with Tag[Result]
+type TypedKeyAddingStage[Result] = Base with KeyAddingStage with Tag
 
 object TypedKeyAddingStage {
   def unsafe[Result](stage: KeyAddingStage) =
@@ -655,6 +767,21 @@ val fruit         = Seq(typedCherries)
 val firstFruit    = fruit.head
                     </script></code></pre>
                 </div>
+                <aside class="notes">
+                    <pre>
+1) Now for the real trick.
+   We take the previous type alias...
+
+2) And add this funny looking thing called Base.
+   Base is a type alias but the right hand side has this weird
+   block looking thing. This is called a Structural Refinement.
+   In this case it is refining the Any type (no identifier before
+   the opening bracket) and it has another nested type alias
+   with some arbitrary name.
+
+3) Now this runs without blowing up at runtime.
+                    </pre>
+                </aside>
             </section>
             <section>
                 <h2>Avoiding Allocation</h2>
@@ -669,6 +796,20 @@ val firstFruit    = fruit.head
 -39: invokevirtual #77        // Method slinky/core/KeyAddingStage.slinky$core$KeyAddingStage$$args:
 -                             //   ()Lscala/scalajs/js/Array;
                 </script></code></pre>
+                <aside class="notes">
+                    <pre>
+What is really going on?
+
+Here I'm showing a diff of the byte code before and after adding the refinement type.
+
+We can see that the result of the unsafe method is a java/lang/Object not a
+scala/scalajs/js/Array.
+
+It was a js.Array because that is the type of an unboxed KeyAddingStage.
+
+Now the compiler has given up trying to check that our cast was safe. Yus!
+                    </pre>
+                </aside>
             </section>
         </section>
         <section>
@@ -698,7 +839,7 @@ type Base = {
   type __TypedKeyAddingStage
 }
 
-trait Tag[Result]
+trait Tag
 
 
 
@@ -707,7 +848,7 @@ trait Tag[Result]
 
 
 
-type TypedKeyAddingStage[Result] = Base with KeyAddingStage with Tag[Result]
+type TypedKeyAddingStage[Result] = Base with KeyAddingStage with Tag
 
 object TypedKeyAddingStage {
   def unsafe[Result](stage: KeyAddingStage) =
@@ -719,7 +860,7 @@ type Base = {
   type __TypedKeyAddingStage
 }
 
-trait Tag[Result]
+trait Tag
 
 object Tag {
   implicit class Ops[Result](stage: TypedKeyAddingStage[Result]) {
@@ -728,7 +869,7 @@ object Tag {
   }
 }
 
-type TypedKeyAddingStage[Result] = Base with KeyAddingStage with Tag[Result]
+type TypedKeyAddingStage[Result] = Base with KeyAddingStage with Tag
 
 object TypedKeyAddingStage {
   def unsafe[Result](stage: KeyAddingStage) =
@@ -754,7 +895,7 @@ def App =
     QuantifiedListItem(5)("Cherries").withKey("cherries") // The type was lost 🤦
   )
                 </script></code></pre>
-                <pre class="fragment"><code class="language-scala" data-trim data-line-numbers="16"><script type="text/template">
+                <pre class="fragment"><code class="language-scala" data-trim data-line-numbers="16-17|"><script type="text/template">
 def RedList(children: TypedReactElement[li.tag.type]*) =
   ul(style := js.Dynamic.literal(color = "red"))(children)
 
@@ -775,6 +916,24 @@ def App =
   )
                 </script></code></pre>
             </div>
+            <aside class="notes">
+                <pre>
+1) Now if we remind ourselves of the example, we have the TypedKeyAddingStage
+   but withKey is still going to return an untyped ReactElement.
+2)
+3) We need to add a new method to our TypedKeyAddingStage.
+   It can't go Tag because remember at runtime it being treated as just an Object
+   and the real type is actually a js.Array.
+   We can use an extension method on our Tag type.
+   I couldn't find a way to have it override the existing withKey method so
+   it's named withKeyTyped.
+   Normally extension methods go on a value class but we already tried that so we
+   use the inline hint.
+4)
+5)
+6) Now we are getting close but we still have this manual call to unsafe.
+                </pre>
+            </aside>
         </section>
         <section>
             <h2>TypedFunctionalComponent</h2>
@@ -857,6 +1016,29 @@ def App =
   )
                 </script></code></pre>
             </div>
+            <aside class="notes">
+                <pre>
+1) Here is the definition for Slinky's FunctionalComponent.
+   It's not exact but close enough.
+2) We want to create an alias that has both a Props and a Result type.
+   The Props are handled the same.
+3) The only other difference is that we say that the result of our
+   TypedFunctionalComponent is a TypedKeyAddingStage[Result]
+4)
+5) Here is the apply method for Slinky's FunctionalComponent.
+6) We create the same thing but replace all the untyped bits
+   with our typed ones.
+7) Result of the render function must be a TypedReactElement.
+8) Pass the Result into the TypedFunctionalComponent.
+9) Call the untyped FunctionalComponent apply method and
+   cast the result.
+10)
+11) Make our QuantifiedListItem a TypedFunctionalComponent
+    that returns a li.tag.
+12) And finally we can drop that call to unsafe.
+13) Now we have got a fully typed API.
+                </pre>
+            </aside>
         </section>
         <section>
             <section>
@@ -922,10 +1104,19 @@ def App =
   RedList(
     li("Apple"),
     li("Banana"),
-    QuantifiedListItem(5)("Cherries") // Compiles 🎉
+    QuantifiedListItem(5)("Cherries") // Compiles 🪄
   )
                     </script></code></pre>
                 </div>
+                <aside class="notes">
+                    <pre>
+1) Something that sucks with the types of our props is that they are not very precise.
+2) We can use Refined types from the Refined Scala library to tag types with predicates
+   such as an Int that must be positive and a String that is trimmed and non-empty.
+   Now these nonsense values will not compile.
+3) Valid values will compile.
+                    </pre>
+                </aside>
             </section>
             <section>
                 <h2>Inside Refined</h2>
@@ -942,11 +1133,18 @@ object Trimmed {
     Validate.fromPredicate(s => s.trim == s, t => s"$t is trimmed", Trimmed())
 }
                 </script></code></pre>
+                <aside class="notes">
+                    <pre>
+1) For the curious among you, you can see that Refined is a value class.
+2) It does some crazy macro shenanigans to validate the value at compile time.
+3) Validations are just predicate functions, a description, and a value of the tag.
+                    </pre>
+                </aside>
             </section>
         </section>
         <section>
             <h2>Unsafe Hooks</h2>
-            <pre><code class="language-scala" data-trim data-line-numbers="2|3|5,9|6|7|8|11|"><script type="text/template">
+            <pre><code class="language-scala" data-trim data-line-numbers="|2|3|5,9|6|7|8|11|"><script type="text/template">
 val component = FunctionalComponent[Unit] { _ =>
   val (messages, setMessages) = useState(Vector.empty[String])
   val (params, setParams) = useState(Params("", 10))
@@ -966,8 +1164,24 @@ val component = FunctionalComponent[Unit] { _ =>
 //  but useEffect either doesn't have a dependency array,
 //  or one of the dependencies changes on every render.
             </script></code></pre>
+            <aside class="notes">
+                    <pre>
+1) One last example.
+   Here we have a FunctionalComponent that uses hooks
+   To access its state and run effects.
+2) It has state for some messages.
+3) State for some query parameters.
+4) It uses an effect hook with a callback.
+5) The callback appends a loading message.
+6) Sends a fake request to load data and add a loaded message when it is done.
+7) It has some cleanup to remove the timeout if the component is unmounted.
+8) Lastly it renders the messages in a textarea.
+9) If we run this...
+10) We get an infinite render loop.
+                    </pre>
+            </aside>
         </section>
-                <section>
+        <section>
             <h2>Safer Hooks</h2>
             <div class="r-stack">
                  <pre><code class="language-scala" data-trim data-line-numbers="9"><script type="text/template">
@@ -1003,6 +1217,14 @@ val component = FunctionalComponent[Unit] { _ =>
                 <textarea readonly style="margin-top: 25px; width: 600px; font-size: 0.5em">Loading data with params: Params(,10)
 Data loaded.</textarea>
             </div>
+            <aside class="notes">
+                    <pre>
+1) What you ought to do is not call setState from within an effect but if you do...
+2) Ensure to provide some dependencies. React will only run the effect if the dependencies change.
+3) This time...
+4) It renders the messages as expected.
+                    </pre>
+            </aside>
         </section>
         <section>
             <h2>Safe...err Hooks</h2>
@@ -1069,6 +1291,18 @@ val component = FunctionalComponent[Unit] { _ =>
 }
                 </script></code></pre>
             </div>
+            <aside class="notes">
+                <pre>
+1) What if we want to modify the params in the render function?
+2) We could set the text to foo if it is empty.
+3) Now...
+4) Infinite render again... Huh!?
+   React uses Object.is to compare the dependencies.
+   copy creates a new instance so Object.is will return false.
+5) The solution is to memoise the result.
+6) Now it is fine but what a foot gun!
+                </pre>
+            </aside>
         </section>
         <section>
             <h2>Stable Tag</h2>
@@ -1089,6 +1323,13 @@ object Stable {
     a.asInstanceOf[Stable[A]]
 }
             </script></code></pre>
+            <aside class="notes">
+                <pre>
+Here is our good old new type boilerplate again but for a type called Stable.
+
+Something is considered stable if it is safe to use with Object.is and as a dependency to a hook.
+                </pre>
+            </aside>
         </section>
         <section>
             <h2>Safety Hooks</h2>
@@ -1112,6 +1353,15 @@ def useMemo[A](memoValue: () => A,
   Stable.byReference(value)
 }
             </script></code></pre>
+            <aside class="notes">
+                <pre>
+1) This is the same useEffect hooks we saw before but it requires Stable dependencies.
+2) The one we want returns a cleanup callback.
+3) useState should also return a stable value.
+   The real implementation of this is far more complicated but this shows the idea.
+4) And lastly, useMemo is the other way to obtain a stable value.
+                </pre>
+            </aside>
         </section>
         <section>
             <h2>Safest Hooks</h2>
@@ -1134,7 +1384,7 @@ val component = FunctionalComponent[Unit] { _ =>
   textarea(readOnly := true, value := messages.mkString("\n"))
 }
                 </script></code></pre>
-                <pre class="fragment"><code class="language-scala" data-trim data-line-numbers="1-3|5-7|9-12|14-18|"><script type="text/template">
+                <pre class="fragment"><code class="language-scala" data-trim data-line-numbers="5-7,13|"><script type="text/template">
 val component = FunctionalComponent[Unit] { _ =>
   val (messages, setMessages) = useState(Vector.empty[String])
   val (params, setParams) = useState(Params("", 10))
@@ -1153,6 +1403,13 @@ val component = FunctionalComponent[Unit] { _ =>
 }
                 </script></code></pre>
             </div>
+            <aside class="notes">
+                <pre>
+1) If we use these new hooks, this example no longer compiles since it is not stable.
+   Copying a stable value is not stable which is what we want.
+2) Memoising the copy and it compiles
+                </pre>
+            </aside>
         </section>
         <section>
             <section>

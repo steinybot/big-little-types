@@ -9,9 +9,9 @@ object StructuralRefinement1:
     type __TypedKeyAddingStage
   }
 
-  trait Tag[Result]
+  trait Tag
 
-  type TypedKeyAddingStage[Result] = Base with KeyAddingStage with Tag[Result]
+  type TypedKeyAddingStage[Result] = Base with KeyAddingStage with Tag
 
   object TypedKeyAddingStage:
     def unsafe[Result](stage: KeyAddingStage) =
