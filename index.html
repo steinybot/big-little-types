@@ -1155,10 +1155,36 @@ val component = FunctionalComponent[Unit] { _ =>
             </div>
         </section>
         <section>
-            <h2>Big Little Types</h2>
-            <ul>
-                <li></li>
-            </ul>
+            <section>
+                <h2>Type-Tagging</h2>
+                <ul>
+                    <li>Tag a type with another type</li>
+                    <li>Use that other type to enforce rules at compile time</li>
+                    <li>Augment an existing API</li>
+                    <li>Make illegal states and values unrepresentable</li>
+                    <li>Enforce order of function calls</li>
+                    <li>Fewer bugs</li>
+                    <li>More maintainable code</li>
+                </ul>
+            </section>
+            <section>
+                <h2>Type-Tagging</h2>
+                <ul>
+                    <li>Approaches:</li>
+                    <ul>
+                        <li>Value Class (Scala 2+)</li>
+                        <li>Newtype (<a href="https://github.com/estatico/scala-newtype">estatico/scala-newtype</a>)</li>
+                        <li>Shapeless' @@ (<a href="https://github.com/milessabin/shapeless">milessabin/shapeless</a>)</li>
+                        <li>Scalaz's @@ (<a href="https://github.com/milessabin/shapeless">scalaz/scalaz</a>)</li>
+                        <li>Opaque Types (Scala 3)</li>
+                    </ul>
+                </ul>
+            </section>
+        </section>
+        <section>
+            <h1>Thanks!</h1>
+            <p>Slides and code: <a href="https://github.com/steinybot/big-little-types">steinybot/big-little-types</a></p>
+            <p>Libraries coming soon...</p>
         </section>
     </div>
 </div>
