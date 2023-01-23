@@ -8,4 +8,6 @@ package object newtype {
 
   type TypedFunctionalComponent[Props, Result] = TypedFunctionalComponent.Type[Props, Result]
 
+  type Stable[A] = Stable.Type[A]
+
 }

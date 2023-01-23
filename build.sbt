@@ -1,3 +1,5 @@
+import scalajsbundler.JSDOMNodeJSEnv
+
 val Scala_2 = "2.13.10"
 val Scala_3 = "3.2.1"
 
@@ -30,6 +32,32 @@ lazy val demo = crossProject(JSPlatform, JVMPlatform).in(file("demo"))
     // ScalaJSBundler only seems to support this for tests for some reason.
     //jsEnv := new org.scalajs.jsenv.jsdomnodejs.JSDOMNodeJSEnv()
     Test / requireJsDomEnv := true,
+    Test / fastLinkJS / scalaJSLinkerConfig ~= {
+      _
+        // FIXME: This doesn't seem to work
+        //.withModuleKind(ModuleKind.CommonJSModule)
+        .withSourceMap(true)
+    },
+    Test / jsEnv := {
+      val defaultJSEnv = (Test / jsEnv).value
+      val optJsdomDir = Def.taskDyn[Option[File]] {
+        if ((Test / requireJsDomEnv).value)
+          (Test / installJsdom).map(Some(_))
+        else
+          Def.task(None)
+      }.value
+      optJsdomDir match {
+        case Some(jsdomDir) =>
+          new JSDOMNodeJSEnv(
+            JSDOMNodeJSEnv.Config(jsdomDir)
+            // Use this to debug Node.js.
+            //.withArgs("--trace-warnings" :: List("--inspect-brk")))
+          )
+        case None =>
+          defaultJSEnv
+      }
+    },
+    Test / webpackConfigFile := Some(baseDirectory.value / "test.webpack.config.js"),
     installJsdom / version := "21.0.0",
     libraryDependencies ++= Seq(
       "org.scala-js" %%% "scalajs-dom" % "2.1.0",
