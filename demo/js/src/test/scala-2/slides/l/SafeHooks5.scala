@@ -32,7 +32,6 @@ object SafeHooks5 {
 
     def byReference[A](a: A): Stable[A] =
       a.asInstanceOf[Stable[A]]
-
   }
 
   def useEffect(thunk: () => Unit, dependencies: Iterable[Stable[_]]): Unit =

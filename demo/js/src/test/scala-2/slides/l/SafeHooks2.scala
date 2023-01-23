@@ -14,7 +14,6 @@ import slinky.web.html.{readOnly, textarea, value}
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Promise}
 import scala.scalajs.concurrent.QueueExecutionContext
-import scala.scalajs.js.JavaScriptException
 import scala.scalajs.js.timers.{clearTimeout, setTimeout}
 import scala.util.Try
 

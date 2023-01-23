@@ -22,6 +22,14 @@ section.has-dark-background, section.has-dark-background h1, section.has-dark-ba
   right: calc(5% + 10px);
 }
 
+.fade-to-nothing.visible {
+  display: none;
+}
+
+.fade-to-nothing.visible.current-fragment {
+  display: block;
+}
+
 .reveal img.inline {
   display: inline-block;
   margin: 0;

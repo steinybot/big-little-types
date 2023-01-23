@@ -57,6 +57,14 @@ $heading4Size: 1.0em;
   right: calc(5% + 10px);
 }
 
+// If it is visible but not the current fragment then remove it from the flow.
+.fade-to-nothing.visible {
+  display: none;
+}
+.fade-to-nothing.visible.current-fragment {
+  display: block;
+}
+
 
 // Override reveal styles.
 

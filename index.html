@@ -945,7 +945,220 @@ object Trimmed {
             </section>
         </section>
         <section>
-            <h2>Safe Hooks</h2>
+            <h2>Unsafe Hooks</h2>
+            <pre><code class="language-scala" data-trim data-line-numbers="2|3|5,9|6|7|8|11|"><script type="text/template">
+val component = FunctionalComponent[Unit] { _ =>
+  val (messages, setMessages) = useState(Vector.empty[String])
+  val (params, setParams) = useState(Params("", 10))
+
+  useEffect(() => {
+    setMessages(_ :+ s"Loading data with params: $params")
+    val handle = setTimeout(1.seconds)(setMessages(_ :+ "Data loaded."))
+    () => clearTimeout(handle)
+  })
+
+  textarea(readOnly := true, value := messages.mkString("\n"))
+}
+            </script></code></pre>
+            <pre class="fragment"><code class="language-plaintext" data-trim style="color: #DCDCAA;"><script type="text/template">
+//Warning: Maximum update depth exceeded.
+//  This can happen when a component calls setState inside useEffect,
+//  but useEffect either doesn't have a dependency array,
+//  or one of the dependencies changes on every render.
+            </script></code></pre>
+        </section>
+                <section>
+            <h2>Safer Hooks</h2>
+            <div class="r-stack">
+                 <pre><code class="language-scala" data-trim data-line-numbers="9"><script type="text/template">
+val component = FunctionalComponent[Unit] { _ =>
+  val (messages, setMessages) = useState(Vector.empty[String])
+  val (params, setParams) = useState(Params("", 10))
+
+  useEffect(() => {
+    setMessages(_ :+ s"Loading data with params: $params")
+    val handle = setTimeout(1.seconds)(setMessages(_ :+ "Data loaded."))
+    () => clearTimeout(handle)
+  })
+
+  textarea(readOnly := true, value := messages.mkString("\n"))
+}
+                </script></code></pre>
+                <pre class="fragment"><code class="language-scala" data-trim data-line-numbers="9|"><script type="text/template">
+val component = FunctionalComponent[Unit] { _ =>
+  val (messages, setMessages) = useState(Vector.empty[String])
+  val (params, setParams) = useState(Params("", 10))
+
+  useEffect(() => {
+    setMessages(_ :+ s"Loading data with params: $params")
+    val handle = setTimeout(1.seconds)(setMessages(_ :+ "Data loaded."))
+    () => clearTimeout(handle)
+  }, Seq(params))
+
+  textarea(readOnly := true, value := messages.mkString("\n"))
+}
+                </script></code></pre>
+            </div>
+            <div class="fragment">
+                <textarea readonly style="margin-top: 25px; width: 600px; font-size: 0.5em">Loading data with params: Params(,10)
+Data loaded.</textarea>
+            </div>
+        </section>
+        <section>
+            <h2>Safe...err Hooks</h2>
+            <div class="r-stack">
+                <div style="width: 100%;">
+                    <div class="r-stack">
+                        <pre><code class="language-scala" data-trim data-line-numbers=""><script type="text/template">
+val component = FunctionalComponent[Unit] { _ =>
+  val (messages, setMessages) = useState(Vector.empty[String])
+  val (params, setParams) = useState(Params("", 10))
+
+
+
+
+
+  useEffect(() => {
+    setMessages(_ :+ s"Loading data with params: $params")
+    val handle = setTimeout(1.seconds)(setMessages(_ :+ "Data loaded."))
+    () => clearTimeout(handle)
+  }, Seq(params))
+
+  textarea(readOnly := true, value := messages.mkString("\n"))
+}
+                        </script></code></pre>
+                        <pre class="fragment"><code class="language-scala" data-trim data-line-numbers="5-7,13|"><script type="text/template">
+val component = FunctionalComponent[Unit] { _ =>
+  val (messages, setMessages) = useState(Vector.empty[String])
+  val (params, setParams) = useState(Params("", 10))
+
+  val paramsWithDefaults = params.copy(
+    text = if (params.text.nonEmpty) params.text else "foo"
+  )
+
+  useEffect(() => {
+    setMessages(_ :+ s"Loading data with params: $paramsWithDefaults")
+    val handle = setTimeout(1.seconds)(setMessages(_ :+ "Data loaded."))
+    () => clearTimeout(handle)
+  }, Seq(paramsWithDefaults))
+
+  textarea(readOnly := true, value := messages.mkString("\n"))
+}
+                        </script></code></pre>
+                    </div>
+                    <pre class="fragment fade-in-then-out fade-to-nothing"><code class="language-plaintext" data-trim style="color: #DCDCAA;"><script type="text/template">
+//Warning: Maximum update depth exceeded...
+                    </script></code></pre>
+                </div>
+                <pre class="fragment"><code class="language-scala" data-trim data-line-numbers="5-7|"><script type="text/template">
+val component = FunctionalComponent[Unit] { _ =>
+  val (messages, setMessages) = useState(Vector.empty[String])
+  val (params, setParams) = useState(Params("", 10))
+
+  val paramsWithDefaults = useMemo(() => params.copy(
+    text = if (params.text.nonEmpty) params.text else "foo"
+  ), Seq(params))
+
+  useEffect(() => {
+    setMessages(_ :+ s"Loading data with params: $paramsWithDefaults")
+    val handle = setTimeout(1.seconds)(setMessages(_ :+ "Data loaded."))
+    () => clearTimeout(handle)
+  }, Seq(paramsWithDefaults))
+
+  textarea(readOnly := true, value := messages.mkString("\n"))
+}
+                </script></code></pre>
+            </div>
+        </section>
+        <section>
+            <h2>Stable Tag</h2>
+             <pre><code class="language-scala" data-trim data-line-numbers="1|5-7|9|11|13-14|"><script type="text/template">
+type Stable[A] = Stable.Type[A]
+
+object Stable {
+
+  type Base = {
+    type __Stable
+  }
+
+  sealed trait Tag extends Any
+
+  type Type[A] <: Base with A with Tag
+
+  def byReference[A](a: A): Stable[A] =
+    a.asInstanceOf[Stable[A]]
+}
+            </script></code></pre>
+        </section>
+        <section>
+            <h2>Safety Hooks</h2>
+            <pre><code class="language-scala" data-trim data-line-numbers="1-3|5-7|9-12|14-18|"><script type="text/template">
+def useEffect(thunk: () => Unit,
+              dependencies: Iterable[Stable[_]]): Unit =
+  Hooks.useEffect(thunk, dependencies)
+
+def useEffectCancellable(thunk: () => () => Unit,
+                         dependencies: Iterable[Stable[_]]): Unit =
+  Hooks.useEffect(thunk, dependencies)
+
+def useState[A](initial: A): (Stable[A], SetStateHookCallback[A]) = {
+  val (state, setState) = Hooks.useState(initial)
+  (Stable.byReference(state), setState)
+}
+
+def useMemo[A](memoValue: () => A,
+               dependencies: Iterable[Stable[_]]): Stable[A] = {
+  val value = Hooks.useMemo[A](memoValue, dependencies)
+  Stable.byReference(value)
+}
+            </script></code></pre>
+        </section>
+        <section>
+            <h2>Safest Hooks</h2>
+            <div class="r-stack">
+                 <pre><code class="language-scala" data-trim data-line-numbers="5-7,13"><script type="text/template">
+val component = FunctionalComponent[Unit] { _ =>
+  val (messages, setMessages) = useState(Vector.empty[String])
+  val (params, setParams) = useState(Params("", 10))
+
+  val paramsWithDefaults = params.copy(
+    text = if (params.text.nonEmpty) params.text else "foo"
+  )
+
+  useEffect(() => {
+    setMessages(_ :+ s"Loading data with params: $paramsWithDefaults")
+    val handle = setTimeout(1.seconds)(setMessages(_ :+ "Data loaded."))
+    () => clearTimeout(handle)
+  }, Seq(paramsWithDefaults)) // Fails to compile 🤘
+
+  textarea(readOnly := true, value := messages.mkString("\n"))
+}
+                </script></code></pre>
+                <pre class="fragment"><code class="language-scala" data-trim data-line-numbers="1-3|5-7|9-12|14-18|"><script type="text/template">
+val component = FunctionalComponent[Unit] { _ =>
+  val (messages, setMessages) = useState(Vector.empty[String])
+  val (params, setParams) = useState(Params("", 10))
+
+  val paramsWithDefaults = useMemo(() => params.copy(
+    text = if (params.text.nonEmpty) params.text else "foo"
+  ), Seq(params))
+
+  useEffect(() => {
+    setMessages(_ :+ s"Loading data with params: $paramsWithDefaults")
+    val handle = setTimeout(1.seconds)(setMessages(_ :+ "Data loaded."))
+    () => clearTimeout(handle)
+  }, Seq(paramsWithDefaults)) // Compiles 😏
+
+  textarea(readOnly := true, value := messages.mkString("\n"))
+}
+                </script></code></pre>
+            </div>
+        </section>
+        <section>
+            <h2>Big Little Types</h2>
+            <ul>
+                <li></li>
+            </ul>
         </section>
     </div>
 </div>
