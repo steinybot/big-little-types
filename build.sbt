@@ -3,6 +3,9 @@ import scalajsbundler.JSDOMNodeJSEnv
 val Scala_2 = "2.13.10"
 val Scala_3 = "3.2.1"
 
+ThisBuild / scalaVersion := Scala_2
+ThisBuild / crossScalaVersions := List(Scala_2, Scala_3)
+
 lazy val root = project.in(file("."))
   .aggregate(demoJS, demoJVM)
   .settings(
@@ -12,8 +15,6 @@ lazy val root = project.in(file("."))
 
 lazy val demo = crossProject(JSPlatform, JVMPlatform).in(file("demo"))
   .settings(
-    scalaVersion := Scala_2,
-    crossScalaVersions := List(Scala_2, Scala_3),
     scalacOptions ++= {
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, _)) => Seq("-Ymacro-annotations")

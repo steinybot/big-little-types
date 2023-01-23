@@ -2,5 +2,5 @@ package slides
 
 package object a:
 
-  case class Props(children: String, amount: Int)
+  case class Props(amount: Int, children: String)
 

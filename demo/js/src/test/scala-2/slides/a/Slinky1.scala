@@ -18,7 +18,7 @@ object Slinky1 {
   def fn(amount: Int)(children: String) =
     li(s"$children * $amount")
 
-  val componentWithProps: KeyAddingStage = component(Props("Cherries", 5))
+  val componentWithProps: KeyAddingStage = component(Props(5, "Cherries"))
 
   val componentWithKey: ReactElement = componentWithProps.withKey("cherries")
 

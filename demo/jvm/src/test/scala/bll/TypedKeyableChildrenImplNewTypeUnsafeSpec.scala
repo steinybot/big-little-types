@@ -6,7 +6,7 @@ import org.scalatest.matchers.must.Matchers._
 
 // https://failex.blogspot.com/2017/04/the-high-cost-of-anyval-subclasses.html
 
-object TypedKeyableChildrenImplNewTypeUnsafeSpec {
+object TypedKeyableChildrenImplNewTypeUnsafeSpec:
 
   trait ReactElement
   final class KeyAddingStage(private val args: Array[Any]) extends AnyVal
@@ -15,11 +15,9 @@ object TypedKeyableChildrenImplNewTypeUnsafeSpec {
 
   type TypedKeyAddingStage[Result] = KeyAddingStage with Tag
 
-  object TypedKeyAddingStage {
+  object TypedKeyAddingStage:
     def unsafe[Result](stage: KeyAddingStage) =
       stage.asInstanceOf[TypedKeyAddingStage[Result]]
-  }
-}
 
 class TypedKeyableChildrenImplNewTypeUnsafeSpec extends AnyFlatSpec {
 
@@ -29,10 +27,9 @@ class TypedKeyableChildrenImplNewTypeUnsafeSpec extends AnyFlatSpec {
     def RedList(children: TypedKeyAddingStage[String]*): ReactElement =
       new ReactElement {}
 
-    object QuantifiedListItem {
+    object QuantifiedListItem:
       def apply(amount: Int)(children: String): KeyAddingStage =
         new KeyAddingStage(Array.empty)
-    }
 
     RedList( //
       TypedKeyAddingStage.unsafe(QuantifiedListItem(1)("Apple")),
