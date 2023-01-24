@@ -37,11 +37,20 @@
                          style="position: relative; top: 5%; left: 19%;">
                 </div>
             </section>
-
+            <section>
+                <h2>Type-Tagging</h2>
+                <ul>
+                    <li>Tag a type with another type</li>
+                    <li class="fragment">Augment the Slinky/React API</li>
+                    <li class="fragment">Use that other type to enforce rules at compile time</li>
+                    <li class="fragment">Make illegal states and values unrepresentable</li>
+                    <li class="fragment">Enforce order of function calls</li>
+                </ul>
+            </section>
             <section>
                 <h2>A Bit About Me</h2>
                 <ul>
-                    <li class="fragment">
+                    <li>
                         Jason Pickens (
                         <img class="inline" data-src="assets/github-mark.svg">
                         <a href="https://github.com/steinybot">@steinybot</a>
@@ -478,7 +487,7 @@ val tag: WithAttrs[li.tag.type] = li("Apple")
 
 val renderedTypedTag: TypedReactElement[li.tag.type] = tag
                     </script></code></pre>
-                    <pre class="fragment"><code class="language-scala" data-trim data-line-numbers="1,10"><script type="text/template">
+                    <pre class="fragment"><code class="language-scala" data-trim data-line-numbers="1,10|"><script type="text/template">
 def RedList(children: TypedReactElement[li.tag.type]*) =
   ul(style := js.Dynamic.literal(color = "red"))(children: _*)
 
